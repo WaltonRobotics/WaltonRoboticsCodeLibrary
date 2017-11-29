@@ -4,20 +4,27 @@ import org.waltonrobotics.controller.Point;
 import org.waltonrobotics.controller.Vector2;
 import org.waltonrobotics.motion.Path;
 
-public class BezierCurve implements Path {
-	private Point[] pathPoints;
-	private Point[] leftPathPoints;
-	private Point[] rightPathPoints;
+/**
+ * Resources:
+ * https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html
+ */
+public  class BezierCurve implements Path {
 
-	private Point[] controlPoints;
+	private final Point[] pathPoints;
+
+	private final double robotLength;
+	private final Point[] controlPoints;
+	private final Vector2[] vectors;
 	private double[] coefficients;
 
-	public BezierCurve(int numberOfSteps, Point... controlPoints) {
+	public BezierCurve(int numberOfSteps, double robotLength, Point... controlPoints) {
 		super();
+		this.robotLength = robotLength;
 		this.controlPoints = controlPoints;
 
 		updateCoefficients();
 		pathPoints = getCurvePoints(numberOfSteps);
+		vectors = getVectors(numberOfSteps);
 	}
 
 	/**
@@ -47,6 +54,16 @@ public class BezierCurve implements Path {
 
 		for (double i = 0; i <= numberOfSteps; i++) {
 			point2DList[(int) i] = getPoint(i / ((double) numberOfSteps));
+		}
+
+		return point2DList;
+	}
+
+	public Vector2[] getVectors(int numberOfSteps) {
+		Vector2[] point2DList = new Vector2[numberOfSteps + 1];
+
+		for (double i = 0; i <= numberOfSteps; i++) {
+			point2DList[(int) i] = getVelocity(i / ((double) numberOfSteps));
 		}
 
 		return point2DList;
@@ -82,14 +99,45 @@ public class BezierCurve implements Path {
 		return new Point(xCoordinateAtPercentage, yCoordinateAtPercentage);
 	}
 
+	public Vector2 getVelocity(double percentage)
+	{
+		double leftVelocity = 0;
+		double rightVelocity = 0;
+
+		int n = getDegree() - 1;
+
+		for (double i = 0; i <= n; i++) {
+			double coefficient = findNumberOfCombination(n, i);
+
+			double oneMinusT = Math.pow(1 - percentage, n - i);
+
+			double powerOfT = Math.pow(percentage, i);
+
+			double pointI_x = controlPoints[(int)i + 1].getX() - controlPoints[(int) i].getX();
+			pointI_x = pointI_x * (n + 1);
+
+			double pointI_y = controlPoints[(int)i + 1].getY() - controlPoints[(int) i].getY();
+			pointI_y = pointI_y *  (n + 1);
+
+			leftVelocity += (coefficient * oneMinusT * powerOfT * (pointI_x));
+			rightVelocity += (coefficient * oneMinusT * powerOfT * (pointI_y));
+		}
+
+		double slope = rightVelocity / leftVelocity;
+
+		leftVelocity = leftVelocity - (robotLength / 2 * slope);
+		rightVelocity = rightVelocity + (robotLength / 2 * slope);
+
+		return new Vector2(leftVelocity, rightVelocity);
+	}
+
 	private int getDegree() {
 		return controlPoints.length - 1;
 	}
 
 	@Override
 	public Vector2[] getSpeedVectors() {
-		// TODO Do the math stuff
-		return null;
+		return vectors;
 	}
 
 	@Override
@@ -99,19 +147,16 @@ public class BezierCurve implements Path {
 
 	@Override
 	public Point[] getLeftPath() {
-		return null;
+		return new Point[0];
 	}
 
 	@Override
 	public Point[] getRightPath() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Point[0];
 	}
 
 	@Override
 	public double[] getDTsOnPath() {
-		// TODO Auto-generated method stub
-		return null;
+		return new double[0];
 	}
-
 }
