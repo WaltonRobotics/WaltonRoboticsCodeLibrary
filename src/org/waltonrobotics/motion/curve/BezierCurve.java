@@ -6,6 +6,8 @@ import org.waltonrobotics.motion.Path;
 
 public class BezierCurve implements Path {
 	private Point[] pathPoints;
+	private Point[] leftPathPoints;
+	private Point[] rightPathPoints;
 
 	private Point[] controlPoints;
 	private double[] coefficients;
@@ -93,6 +95,23 @@ public class BezierCurve implements Path {
 	@Override
 	public Point[] getPathPoints() {
 		return pathPoints;
+	}
+
+	@Override
+	public Point[] getLeftPath() {
+		return null;
+	}
+
+	@Override
+	public Point[] getRightPath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double[] getDTsOnPath() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
