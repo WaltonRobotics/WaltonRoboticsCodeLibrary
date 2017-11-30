@@ -11,6 +11,8 @@ import org.waltonrobotics.motion.Path;
 public class BezierCurve implements Path {
 
 	private final Point[] pathPoints;
+	private final Point[] leftPoints;
+	private final Point[] rightPoints;
 
 	private final double robotLength;
 	private final Point[] controlPoints;
@@ -21,9 +23,13 @@ public class BezierCurve implements Path {
 		super();
 		this.robotLength = robotLength;
 		this.controlPoints = controlPoints;
+		Point[] rightControlPoints = offsetControlPoints(controlPoints, true);
+		Point[] leftControlPoints = offsetControlPoints(controlPoints, false);
 
 		updateCoefficients();
-		pathPoints = getCurvePoints(numberOfSteps);
+		pathPoints = getCurvePoints(numberOfSteps, controlPoints);
+		rightPoints = getCurvePoints(numberOfSteps, rightControlPoints);
+		leftPoints = getCurvePoints(numberOfSteps, leftControlPoints);
 		vectors = getVectors(numberOfSteps);
 	}
 
@@ -49,11 +55,11 @@ public class BezierCurve implements Path {
 		return r;
 	}
 
-	private Point[] getCurvePoints(int numberOfSteps) {
+	private Point[] getCurvePoints(int numberOfSteps, Point[] controlPoints) {
 		Point[] point2DList = new Point[numberOfSteps + 1];
 
 		for (double i = 0; i <= numberOfSteps; i++) {
-			point2DList[(int) i] = getPoint(i / ((double) numberOfSteps));
+			point2DList[(int) i] = getPoint(i / ((double) numberOfSteps), controlPoints);
 		}
 
 		return point2DList;
@@ -77,7 +83,7 @@ public class BezierCurve implements Path {
 		}
 	}
 
-	private Point getPoint(double percentage) {
+	private Point getPoint(double percentage, Point[] controlPoints) {
 		double xCoordinateAtPercentage = 0;
 		double yCoordinateAtPercentage = 0;
 
@@ -96,7 +102,7 @@ public class BezierCurve implements Path {
 			yCoordinateAtPercentage += (coefficient * oneMinusT * powerOfT * pointI.getY());
 		}
 
-		return new Point(xCoordinateAtPercentage, yCoordinateAtPercentage, getDerivative(percentage));
+		return new Point(xCoordinateAtPercentage, yCoordinateAtPercentage, getDT(percentage, controlPoints));
 	}
 
 	private Vector2 getVelocity(double percentage) {
@@ -112,10 +118,10 @@ public class BezierCurve implements Path {
 
 			double powerOfT = Math.pow(percentage, i);
 
-			double dt = getDerivative(percentage);
-
-			leftVelocity += (coefficient * oneMinusT * powerOfT * (dt));
-			rightVelocity += (coefficient * oneMinusT * powerOfT * (dt));
+//			double dt = getDT(percentage);
+//
+//			leftVelocity += (coefficient * oneMinusT * powerOfT * (dt));
+//			rightVelocity += (coefficient * oneMinusT * powerOfT * (dt));
 		}
 
 		double slope = rightVelocity / leftVelocity;
@@ -136,16 +142,25 @@ public class BezierCurve implements Path {
 	 *            - percent along curve
 	 * @return derivative at point
 	 */
-	private double getDerivative(double t) {
+	private double getDT(double t, Point[] controlPoints) {
 		int n = getDegree();
 		double dx = 0;
 		double dy = 0;
 		for (int i = 0; i < n; i++) {
-			double coefficient = findNumberOfCombination(n - 1, i) * Math.pow(t, i) * Math.pow(t, n - 1 - i);
+			double coefficient = findNumberOfCombination(n - 1, i) * Math.pow(t, i) * Math.pow(1 - t, n - 1 - i);
 			dx += coefficient * n * (controlPoints[i + 1].getX() - controlPoints[i].getX());
 			dy += coefficient * n * (controlPoints[i + 1].getY() - controlPoints[i].getY());
 		}
 		return dy / dx;
+	}
+	
+	private Point[] offsetControlPoints(Point[] controlPoints, boolean isRightSide) {
+		Point[] offsetPoints = new Point[getDegree() +1];
+		for(int i = 0; i <= getDegree(); i++) {
+			double dt = getDT(0, controlPoints);
+			offsetPoints[i] = controlPoints[i].offsetPerpendicular(dt, isRightSide ? robotLength : -robotLength);
+		}
+		return offsetPoints;
 	}
 
 	@Override
@@ -160,11 +175,11 @@ public class BezierCurve implements Path {
 
 	@Override
 	public Point[] getLeftPath() {
-		return new Point[0];
+		return leftPoints;
 	}
 
 	@Override
 	public Point[] getRightPath() {
-		return new Point[0];
+		return rightPoints;
 	}
 }

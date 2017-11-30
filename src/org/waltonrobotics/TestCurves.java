@@ -20,15 +20,19 @@ public class TestCurves {
 	public static void main(String[] args) {
 		System.out.println("Bezier Curve with control points a, b, c, and d");
 		BezierCurve curve = new BezierCurve(steps, width, a, b, c, d);
-		for (Point point : curve.getPathPoints()) {
-			locatePoints(point.getX(), point.getY());
+		Point[] centerPoints = curve.getPathPoints();
+		Point[] leftPoints = curve.getLeftPath();
+		Point[] rightPoints = curve.getRightPath();
+		for (int i = 0; i < centerPoints.length; i++) {
+			locateSidePoints(leftPoints[i].getX(), leftPoints[i].getY(), leftPoints[i].getDerivative(),
+					rightPoints[i].getX(), rightPoints[i].getY(), rightPoints[i].getDerivative());
 		}
 		System.out.println("Spline with knots a, b, c, and d");
 		Spline spline = new Spline(steps, width, b, c, d);
-		Point[] centerPoints = spline.getPathPoints();
-		Point[] leftPoints = spline.getLeftPath();
-		Point[] rightPoints = spline.getRightPath();
-		for (int i = 0; i < leftPoints.length; i++) {
+		centerPoints = spline.getPathPoints();
+		leftPoints = spline.getLeftPath();
+		rightPoints = spline.getRightPath();
+		for (int i = 0; i < centerPoints.length; i++) {
 			locateSidePoints(leftPoints[i].getX(), leftPoints[i].getY(), leftPoints[i].getDerivative(),
 					rightPoints[i].getX(), rightPoints[i].getY(), rightPoints[i].getDerivative());
 		}
