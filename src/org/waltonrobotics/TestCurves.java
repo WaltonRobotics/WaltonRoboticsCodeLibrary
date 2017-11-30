@@ -26,14 +26,13 @@ public class TestCurves {
 		Point[] centerPoints = spline.getPathPoints();
 		Point[] leftPoints = spline.getLeftPath();
 		Point[] rightPoints = spline.getRightPath();
-		double[] dts = spline.getDTsOnPath();
 		for (int i = 0; i < leftPoints.length; i++) {
 			locateSidePoints(leftPoints[i].getX(), leftPoints[i].getY(), centerPoints[i].getX(), centerPoints[i].getY(),
-					rightPoints[i].getX(), rightPoints[i].getY(), dts[i]);
+					rightPoints[i].getX(), rightPoints[i].getY());
 		}
 	}
 
-	private static void locateSidePoints(double xL, double yL, double xC, double yC, double xR, double yR, double dt) {
+	private static void locateSidePoints(double xL, double yL, double xC, double yC, double xR, double yR) {
 		System.out.printf(
 				"xL: %01.03f \t yL: %01.03f \t xC: %01.03f \t yC: %01.03f \t xR: %01.03f \t yR: %01.03f \t dt: %f \n",
 				xL, yL, xC, yC, xR, yR, dt);
