@@ -4,114 +4,157 @@ import org.waltonrobotics.controller.Point;
 import org.waltonrobotics.controller.Vector2;
 import org.waltonrobotics.motion.Path;
 
+/**
+ * Resources: https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html
+ */
 public class BezierCurve implements Path {
-	private Point[] pathPoints;
-	private Point[] leftPathPoints;
-	private Point[] rightPathPoints;
 
-	private Point[] controlPoints;
-	private double[] coefficients;
+  private final Point[] pathPoints;
 
-	public BezierCurve(int numberOfSteps, Point... controlPoints) {
-		super();
-		this.controlPoints = controlPoints;
+  private final double robotLength;
+  private final Point[] controlPoints;
+  private final Vector2[] vectors;
+  private double[] coefficients;
 
-		updateCoefficients();
-		pathPoints = getCurvePoints(numberOfSteps);
-	}
+  public BezierCurve(int numberOfSteps, double robotLength, Point... controlPoints) {
+    super();
+    this.robotLength = robotLength;
+    this.controlPoints = controlPoints;
 
-	/**
-	 * n! / i!(n-i)!
-	 */
-	private static double findNumberOfCombination(double n, double i) {
-		double nFactorial = factorial(n);
-		double iFactorial = factorial(i);
-		double nMinusIFactorial = factorial(n - i);
+    updateCoefficients();
+    pathPoints = getCurvePoints(numberOfSteps);
+    vectors = getVectors(numberOfSteps);
+  }
 
-		return nFactorial / (iFactorial * nMinusIFactorial);
-	}
+  /**
+   * n! / i!(n-i)!
+   */
+  private static double findNumberOfCombination(double n, double i) {
+    double nFactorial = factorial(n);
+    double iFactorial = factorial(i);
+    double nMinusIFactorial = factorial(n - i);
 
-	/**
-	 * for decimal number and integers
-	 */
-	private static double factorial(double d) {
-		double r = d - Math.floor(d) + 1;
-		for (; d > 1; d -= 1) {
-			r *= d;
-		}
-		return r;
-	}
+    return nFactorial / (iFactorial * nMinusIFactorial);
+  }
 
-	public Point[] getCurvePoints(int numberOfSteps) {
-		Point[] point2DList = new Point[numberOfSteps + 1];
+  /**
+   * for decimal number and integers
+   */
+  private static double factorial(double d) {
+    double r = d - Math.floor(d) + 1;
+    for (; d > 1; d -= 1) {
+      r *= d;
+    }
+    return r;
+  }
 
-		for (double i = 0; i <= numberOfSteps; i++) {
-			point2DList[(int) i] = getPoint(i / ((double) numberOfSteps));
-		}
+  public Point[] getCurvePoints(int numberOfSteps) {
+    Point[] point2DList = new Point[numberOfSteps + 1];
 
-		return point2DList;
-	}
+    for (double i = 0; i <= numberOfSteps; i++) {
+      point2DList[(int) i] = getPoint(i / ((double) numberOfSteps));
+    }
 
-	private void updateCoefficients() {
-		int n = getDegree();
-		coefficients = new double[n + 1];
-		for (int i = 0; i < coefficients.length; i++) {
-			coefficients[i] = findNumberOfCombination(n, i);
-		}
-	}
+    return point2DList;
+  }
 
-	private Point getPoint(double percentage) {
-		double xCoordinateAtPercentage = 0;
-		double yCoordinateAtPercentage = 0;
+  public Vector2[] getVectors(int numberOfSteps) {
+    Vector2[] point2DList = new Vector2[numberOfSteps + 1];
 
-		int n = getDegree();
+    for (double i = 0; i <= numberOfSteps; i++) {
+      point2DList[(int) i] = getVelocity(i / ((double) numberOfSteps));
+    }
 
-		for (double i = 0; i <= n; i++) {
-			double coefficient = coefficients[(int) i];
+    return point2DList;
+  }
 
-			double oneMinusT = Math.pow(1 - percentage, n - i);
+  private void updateCoefficients() {
+    int n = getDegree();
+    coefficients = new double[n + 1];
+    for (int i = 0; i < coefficients.length; i++) {
+      coefficients[i] = findNumberOfCombination(n, i);
+    }
+  }
 
-			double powerOfT = Math.pow(percentage, i);
+  private Point getPoint(double percentage) {
+    double xCoordinateAtPercentage = 0;
+    double yCoordinateAtPercentage = 0;
 
-			Point pointI = controlPoints[(int) i];
+    int n = getDegree();
 
-			xCoordinateAtPercentage += (coefficient * oneMinusT * powerOfT * pointI.getX());
-			yCoordinateAtPercentage += (coefficient * oneMinusT * powerOfT * pointI.getY());
-		}
+    for (double i = 0; i <= n; i++) {
+      double coefficient = coefficients[(int) i];
 
-		return new Point(xCoordinateAtPercentage, yCoordinateAtPercentage);
-	}
+      double oneMinusT = Math.pow(1 - percentage, n - i);
 
-	private int getDegree() {
-		return controlPoints.length - 1;
-	}
+      double powerOfT = Math.pow(percentage, i);
 
-	@Override
-	public Vector2[] getSpeedVectors() {
-		// TODO Do the math stuff
-		return null;
-	}
+      Point pointI = controlPoints[(int) i];
 
-	@Override
-	public Point[] getPathPoints() {
-		return pathPoints;
-	}
+      xCoordinateAtPercentage += (coefficient * oneMinusT * powerOfT * pointI.getX());
+      yCoordinateAtPercentage += (coefficient * oneMinusT * powerOfT * pointI.getY());
+    }
 
-	@Override
-	public Point[] getLeftPath() {
-		return null;
-	}
+    return new Point(xCoordinateAtPercentage, yCoordinateAtPercentage);
+  }
 
-	@Override
-	public Point[] getRightPath() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  public Vector2 getVelocity(double percentage) {
+    double leftVelocity = 0;
+    double rightVelocity = 0;
 
-	@Override
-	public double[] getDTsOnPath() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    int n = getDegree() - 1;
 
+    for (double i = 0; i <= n; i++) {
+      double coefficient = findNumberOfCombination(n, i);
+
+      double oneMinusT = Math.pow(1 - percentage, n - i);
+
+      double powerOfT = Math.pow(percentage, i);
+
+      double pointI_x = controlPoints[(int) i + 1].getX() - controlPoints[(int) i].getX();
+      pointI_x = pointI_x * (n + 1);
+
+      double pointI_y = controlPoints[(int) i + 1].getY() - controlPoints[(int) i].getY();
+      pointI_y = pointI_y * (n + 1);
+
+      leftVelocity += (coefficient * oneMinusT * powerOfT * (pointI_x));
+      rightVelocity += (coefficient * oneMinusT * powerOfT * (pointI_y));
+    }
+
+    double slope = rightVelocity / leftVelocity;
+
+    leftVelocity = leftVelocity - (robotLength / 2 * slope);
+    rightVelocity = rightVelocity + (robotLength / 2 * slope);
+
+    return new Vector2(leftVelocity, rightVelocity);
+  }
+
+  private int getDegree() {
+    return controlPoints.length - 1;
+  }
+
+  @Override
+  public Vector2[] getSpeedVectors() {
+    return vectors;
+  }
+
+  @Override
+  public Point[] getPathPoints() {
+    return pathPoints;
+  }
+
+  @Override
+  public Point[] getLeftPath() {
+    return new Point[0];
+  }
+
+  @Override
+  public Point[] getRightPath() {
+    return new Point[0];
+  }
+
+  @Override
+  public double[] getDTsOnPath() {
+    return new double[0];
+  }
 }
