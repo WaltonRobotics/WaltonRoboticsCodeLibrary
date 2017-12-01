@@ -101,7 +101,7 @@ public class BezierCurve implements Path {
 			yCoordinateAtPercentage += (coefficient * oneMinusT * powerOfT * pointI.getY());
 		}
 
-		return new Point(xCoordinateAtPercentage, yCoordinateAtPercentage, getDT(percentage, controlPoints));
+		return new Point(xCoordinateAtPercentage, yCoordinateAtPercentage, getDT(percentage));
 	}
 
 	private Vector2 getVelocity(double percentage) {
@@ -145,14 +145,14 @@ public class BezierCurve implements Path {
 	 *            - control points defining the curve
 	 * @return derivative at point
 	 */
-	private double getDT(double t, Point[] pathPoints) {
+	private double getDT(double t) {
 		int n = getDegree();
 		double dx = 0;
 		double dy = 0;
 		for (int i = 0; i < n; i++) {
-			double coefficient = findNumberOfCombination(n - 1, i) * Math.pow(t, i) * Math.pow(1 - t, n - 1 - i);
-			dx += coefficient * n * (controlPoints[i + 1].getX() - controlPoints[i].getX());
-			dy += coefficient * n * (controlPoints[i + 1].getY() - controlPoints[i].getY());
+			double coefficient = findNumberOfCombination(n, i) * Math.pow(t, i) * Math.pow(1 - t, n - i);
+			dx += coefficient * (n + 1) * (controlPoints[i + 1].getX() - controlPoints[i].getX());
+			dy += coefficient * (n + 1) * (controlPoints[i + 1].getY() - controlPoints[i].getY());
 		}
 		return dy / dx;
 	}

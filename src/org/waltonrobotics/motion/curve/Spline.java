@@ -58,11 +58,11 @@ public class Spline implements Path {
 		Point[] points2 = new Point[degree];
 
 		/* constants for Thomas Algorithm */
-		double[] a = new double[degree + 1];
-		double[] b = new double[degree + 1];
-		double[] c = new double[degree + 1];
-		double[] r_x = new double[degree + 1];
-		double[] r_y = new double[degree + 1];
+		double[] a = new double[degree];
+		double[] b = new double[degree];
+		double[] c = new double[degree];
+		double[] r_x = new double[degree];
+		double[] r_y = new double[degree];
 
 		/* left most segment */
 		a[0] = 0;
@@ -107,11 +107,11 @@ public class Spline implements Path {
 		}
 
 		points2[degree - 1] = new Point(0.5 * (knots[degree].getX() + points1[degree - 1].getX()),
-				0.5 * (knots[degree].getX() + points1[degree - 1].getX()));
+				0.5 * (knots[degree].getY() + points1[degree - 1].getY()));
 		List<List<Point>> controlPoints = new ArrayList<>();
 		for (int i = 0; i < degree; i++) {
 			List<Point> segmentControlPoints = new ArrayList<>();
-			Collections.addAll(segmentControlPoints, knots[i], points2[i], points2[i], knots[i + 1]);
+			Collections.addAll(segmentControlPoints, knots[i], points1[i], points2[i], knots[i + 1]);
 			Collections.addAll(controlPoints, segmentControlPoints);
 		}
 
