@@ -23,13 +23,12 @@ public class BezierCurve implements Path {
 		super();
 		this.robotLength = robotLength;
 		this.controlPoints = controlPoints;
-		Point[] rightControlPoints = offsetControlPoints(controlPoints, true);
-		Point[] leftControlPoints = offsetControlPoints(controlPoints, false);
 
 		updateCoefficients();
 		pathPoints = getCurvePoints(numberOfSteps, controlPoints);
-		rightPoints = getCurvePoints(numberOfSteps, rightControlPoints);
-		leftPoints = getCurvePoints(numberOfSteps, leftControlPoints);
+		
+		rightPoints = offsetPoints(pathPoints, true);
+		leftPoints = offsetPoints(pathPoints, false);
 		vectors = getVectors(numberOfSteps);
 	}
 
@@ -114,14 +113,14 @@ public class BezierCurve implements Path {
 		for (double i = 0; i <= n; i++) {
 			double coefficient = findNumberOfCombination(n, i);
 
-			double oneMinusT = Math.pow(1 - percentage, n - i); //TODO Fix math
+			double oneMinusT = Math.pow(1 - percentage, n - i); // TODO Fix math
 
 			double powerOfT = Math.pow(percentage, i);
 
-//			double dt = getDT(percentage);
-//
-//			leftVelocity += (coefficient * oneMinusT * powerOfT * (dt));
-//			rightVelocity += (coefficient * oneMinusT * powerOfT * (dt));
+			// double dt = getDT(percentage);
+			//
+			// leftVelocity += (coefficient * oneMinusT * powerOfT * (dt));
+			// rightVelocity += (coefficient * oneMinusT * powerOfT * (dt));
 		}
 
 		double slope = rightVelocity / leftVelocity;
@@ -137,12 +136,16 @@ public class BezierCurve implements Path {
 	}
 
 	/**
+	 * Given the control points defining the curve, find the derivative at any point
+	 * on the curve
 	 * 
 	 * @param t
 	 *            - percent along curve
+	 * @param controlPoints
+	 *            - control points defining the curve
 	 * @return derivative at point
 	 */
-	private double getDT(double t, Point[] controlPoints) {
+	private double getDT(double t, Point[] pathPoints) {
 		int n = getDegree();
 		double dx = 0;
 		double dy = 0;
@@ -153,12 +156,19 @@ public class BezierCurve implements Path {
 		}
 		return dy / dx;
 	}
-	
-	private Point[] offsetControlPoints(Point[] controlPoints, boolean isRightSide) {
-		Point[] offsetPoints = new Point[getDegree() +1];
-		for(int i = 0; i <= getDegree(); i++) {
-			double dt = getDT(0, controlPoints);
-			offsetPoints[i] = controlPoints[i].offsetPerpendicular(dt, isRightSide ? robotLength : -robotLength);
+
+	/**
+	 * Offsets control points of a curve
+	 * 
+	 * @param pathPoints
+	 * @param isRightSide
+	 * @return
+	 */
+	private Point[] offsetPoints(Point[] pathPoints, boolean isRightSide) {
+		int n = pathPoints.length;
+		Point[] offsetPoints = new Point[n];
+		for (int i = 0; i < n; i++) {
+			offsetPoints[i] = pathPoints[i].offsetPerpendicular(pathPoints[i].getDerivative(), isRightSide ? robotLength : -robotLength);
 		}
 		return offsetPoints;
 	}

@@ -7,19 +7,20 @@ import org.waltonrobotics.motion.curve.Spline;
 public class TestCurves {
 
 	public static int steps = 100;
-	public static double width = 1;
+	public static double width = 0.5;
 
 	private static Point a = new Point(0, 0);
-	private static Point b = new Point(2, 5);
-	private static Point c = new Point(5, 2);
-	private static Point d = new Point(10, 10);
+	private static Point b = new Point(1, 1);
+	private static Point c = new Point(2, 2);
+	private static Point d = new Point(3, 3);
+	private static Point e = new Point(4, 5);
 
 	/**
 	 * Run this class to test outputs of Spline and Bezier Curve
 	 */
 	public static void main(String[] args) {
-		System.out.println("Bezier Curve with control points a, b, c, and d");
-		BezierCurve curve = new BezierCurve(steps, width, a, b, c, d);
+		System.out.println("Bezier Curve with control points");
+		BezierCurve curve = new BezierCurve(steps, width, a, b, c, d, e);
 		Point[] centerPoints = curve.getPathPoints();
 		Point[] leftPoints = curve.getLeftPath();
 		Point[] rightPoints = curve.getRightPath();
@@ -27,8 +28,8 @@ public class TestCurves {
 			locateSidePoints(leftPoints[i].getX(), leftPoints[i].getY(), leftPoints[i].getDerivative(),
 					rightPoints[i].getX(), rightPoints[i].getY(), rightPoints[i].getDerivative());
 		}
-		System.out.println("Spline with knots a, b, c, and d");
-		Spline spline = new Spline(steps, width, b, c, d);
+		System.out.println("Spline with knots");
+		Spline spline = new Spline(steps, width, b, c, d, e);
 		centerPoints = spline.getPathPoints();
 		leftPoints = spline.getLeftPath();
 		rightPoints = spline.getRightPath();
