@@ -10,48 +10,48 @@ import org.waltonrobotics.motion.Path;
 
 public class MotionController {
 
-  boolean running;
-  private BlockingDeque<Vector2> motions = new LinkedBlockingDeque<>();
-  private Timer velocityScheduler;
+	boolean running;
+	private BlockingDeque<Vector2> motions = new LinkedBlockingDeque<>();
+	private Timer velocityScheduler;
 
-  public MotionController(long period) {
-    velocityScheduler = new Timer();
-    enableScheduler(period);
-  }
+	public MotionController(long period) {
+		velocityScheduler = new Timer();
+		enableScheduler(period);
+	}
 
-  public void addPaths(Path... paths) {
-    for (Path path : paths) {
-      Collections.addAll(motions, path.getSpeedVectors());
-    }
-  }
+	public void addPaths(Path... paths) {
+		for (Path path : paths) {
+			Collections.addAll(motions, path.getSpeedVectors());
+		}
+	}
 
-  public void stopScheduler() {
-    velocityScheduler.cancel();
-    running = false;
-  }
+	public void stopScheduler() {
+		velocityScheduler.cancel();
+		running = false;
+	}
 
-  public void enableScheduler(long period) {
-    if (!running) {
-      velocityScheduler.scheduleAtFixedRate(new MotionTask(), 0L, period);
-      running = true;
-    }
-  }
+	public void enableScheduler(long period) {
+		if (!running) {
+			velocityScheduler.scheduleAtFixedRate(new MotionTask(), 0L, period);
+			running = true;
+		}
+	}
 
-  public void clearMotions() {
-    motions.clear();
-  }
+	public void clearMotions() {
+		motions.clear();
+	}
 
-  public boolean isRunning() {
-    return running;
-  }
+	public boolean isRunning() {
+		return running;
+	}
 
-  private class MotionTask extends TimerTask {
+	private class MotionTask extends TimerTask {
 
-    @Override
-    public void run() {
-      Vector2 vec2 = motions.poll();
-      DriveTrain.setSpeeds(vec2.getLeftVelocity(), vec2.getRightVelocity());
-    }
+		@Override
+		public void run() {
+			Vector2 vec2 = motions.poll();
+			DriveTrain.setSpeeds(vec2.getLeftVelocity(), vec2.getRightVelocity());
+		}
 
-  }
+	}
 }

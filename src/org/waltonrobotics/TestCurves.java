@@ -6,42 +6,41 @@ import org.waltonrobotics.motion.curve.Spline;
 
 public class TestCurves {
 
-  private static int steps = 100;
-  private static Point a = new Point(0, 0);
-  private static Point b = new Point(2, 5);
-  private static Point c = new Point(5, 2);
-  private static Point d = new Point(10, 10);
+	public static int steps = 100;
+	public static double width = 0;
 
-  /**
-   * Run this class to test outputs of Spline and Bezier Curve
-   */
-  public static void main(String[] args) {
-    System.out.println("Bezier Curve with control points a, b, c, and d");
-    BezierCurve curve = new BezierCurve(steps, a, b, c, d);
-    for (Point point : curve.getPathPoints()) {
-      locatePoints(point.getX(), point.getY());
-    }
-    System.out.println("Spline with knots a, b, c, and d");
-    Spline spline = new Spline(steps, a, b, c, d);
-    Point[] centerPoints = spline.getPathPoints();
-    Point[] leftPoints = spline.getLeftPath();
-    Point[] rightPoints = spline.getRightPath();
-    double[] dts = spline.getDTsOnPath();
-    for (int i = 0; i < leftPoints.length; i++) {
-      locateSidePoints(leftPoints[i].getX(), leftPoints[i].getY(), centerPoints[i].getX(),
-          centerPoints[i].getY(),
-          rightPoints[i].getX(), rightPoints[i].getY(), dts[i]);
-    }
-  }
+	private static Point a = new Point(0, 2);
+	private static Point b = new Point(5, -12);
+	private static Point c = new Point(7, 12);
+	private static Point d = new Point(-7, 3);
+	private static Point e = new Point(2, 0);
 
-  private static void locateSidePoints(double xL, double yL, double xC, double yC, double xR,
-      double yR, double dt) {
-    System.out.printf(
-        "xL: %01.03f \t yL: %01.03f \t xC: %01.03f \t yC: %01.03f \t xR: %01.03f \t yR: %01.03f \t dt: %f \n",
-        xL, yL, xC, yC, xR, yR, dt);
-  }
+	/**
+	 * Run this class to test outputs of Spline and Bezier Curve
+	 */
+	public static void main(String[] args) {
+		System.out.println("Bezier Curve with control points");
+		BezierCurve curve = new BezierCurve(steps, width, a, b, c, d);
+		Point[] centerPoints = curve.getPathPoints();
+		Point[] leftPoints = curve.getLeftPath();
+		Point[] rightPoints = curve.getRightPath();
+		for (int i = 0; i < centerPoints.length; i++) {
+			locateSidePoints(leftPoints[i].getX(), leftPoints[i].getY(), rightPoints[i].getX(), rightPoints[i].getY(),
+					centerPoints[i].getDerivative());
+		}
+		System.out.println("Spline with knots");
+		Spline spline = new Spline(steps, width, a, b, c, d);
+		centerPoints = spline.getPathPoints();
+		leftPoints = spline.getLeftPath();
+		rightPoints = spline.getRightPath();
+		for (int i = 0; i < centerPoints.length; i++) {
+			locateSidePoints(leftPoints[i].getX(), leftPoints[i].getY(), rightPoints[i].getX(), rightPoints[i].getY(),
+					centerPoints[i].getDerivative());
+		}
+	}
 
-  private static void locatePoints(double x, double y) {
-    System.out.printf("x: %01.03f \t y: %01.03f \n", x, y);
-  }
+	private static void locateSidePoints(double xL, double yL, double xR, double yR, double dt) {
+		System.out.printf("xL: %01.03f \t yL: %01.03f \t xR: %01.03f \t yR: %01.03f \t dt: %01.03f \n", xL, yL, xR, yR,
+				dt);
+	}
 }

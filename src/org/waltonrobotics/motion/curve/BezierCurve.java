@@ -5,156 +5,191 @@ import org.waltonrobotics.controller.Vector2;
 import org.waltonrobotics.motion.Path;
 
 /**
- * Resources: https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html
+ * Resources:
+ * https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html
  */
 public class BezierCurve implements Path {
 
-  private final Point[] pathPoints;
+	private final Point[] pathPoints;
+	private final Point[] leftPoints;
+	private final Point[] rightPoints;
 
-  private final double robotLength;
-  private final Point[] controlPoints;
-  private final Vector2[] vectors;
-  private double[] coefficients;
+	private final double robotLength;
+	private final Point[] controlPoints;
+	private final Vector2[] vectors;
+	private double[] coefficients;
 
-  public BezierCurve(int numberOfSteps, double robotLength, Point... controlPoints) {
-    super();
-    this.robotLength = robotLength;
-    this.controlPoints = controlPoints;
+	public BezierCurve(int numberOfSteps, double robotLength, Point... controlPoints) {
+		super();
+		this.robotLength = robotLength;
+		this.controlPoints = controlPoints;
 
-    updateCoefficients();
-    pathPoints = getCurvePoints(numberOfSteps);
-    vectors = getVectors(numberOfSteps);
-  }
+		updateCoefficients();
+		pathPoints = getCurvePoints(numberOfSteps, controlPoints);
+		
+		rightPoints = offsetPoints(pathPoints, true);
+		leftPoints = offsetPoints(pathPoints, false);
+		vectors = getVectors(numberOfSteps);
+	}
 
-  /**
-   * n! / i!(n-i)!
-   */
-  private static double findNumberOfCombination(double n, double i) {
-    double nFactorial = factorial(n);
-    double iFactorial = factorial(i);
-    double nMinusIFactorial = factorial(n - i);
+	/**
+	 * n! / i!(n-i)!
+	 */
+	private static double findNumberOfCombination(double n, double i) {
+		double nFactorial = factorial(n);
+		double iFactorial = factorial(i);
+		double nMinusIFactorial = factorial(n - i);
 
-    return nFactorial / (iFactorial * nMinusIFactorial);
-  }
+		return nFactorial / (iFactorial * nMinusIFactorial);
+	}
 
-  /**
-   * for decimal number and integers
-   */
-  private static double factorial(double d) {
-    double r = d - Math.floor(d) + 1;
-    for (; d > 1; d -= 1) {
-      r *= d;
-    }
-    return r;
-  }
+	/**
+	 * for decimal number and integers
+	 */
+	private static double factorial(double d) {
+		double r = d - Math.floor(d) + 1;
+		for (; d > 1; d -= 1) {
+			r *= d;
+		}
+		return r;
+	}
 
-  public Point[] getCurvePoints(int numberOfSteps) {
-    Point[] point2DList = new Point[numberOfSteps + 1];
+	private Point[] getCurvePoints(int numberOfSteps, Point[] controlPoints) {
+		Point[] point2DList = new Point[numberOfSteps + 1];
 
-    for (double i = 0; i <= numberOfSteps; i++) {
-      point2DList[(int) i] = getPoint(i / ((double) numberOfSteps));
-    }
+		for (double i = 0; i <= numberOfSteps; i++) {
+			point2DList[(int) i] = getPoint(i / ((double) numberOfSteps), controlPoints);
+		}
 
-    return point2DList;
-  }
+		return point2DList;
+	}
 
-  public Vector2[] getVectors(int numberOfSteps) {
-    Vector2[] point2DList = new Vector2[numberOfSteps + 1];
+	private Vector2[] getVectors(int numberOfSteps) {
+		Vector2[] point2DList = new Vector2[numberOfSteps + 1];
 
-    for (double i = 0; i <= numberOfSteps; i++) {
-      point2DList[(int) i] = getVelocity(i / ((double) numberOfSteps));
-    }
+		for (double i = 0; i <= numberOfSteps; i++) {
+			point2DList[(int) i] = getVelocity(i / ((double) numberOfSteps));
+		}
 
-    return point2DList;
-  }
+		return point2DList;
+	}
 
-  private void updateCoefficients() {
-    int n = getDegree();
-    coefficients = new double[n + 1];
-    for (int i = 0; i < coefficients.length; i++) {
-      coefficients[i] = findNumberOfCombination(n, i);
-    }
-  }
+	private void updateCoefficients() {
+		int n = getDegree();
+		coefficients = new double[n + 1];
+		for (int i = 0; i < coefficients.length; i++) {
+			coefficients[i] = findNumberOfCombination(n, i);
+		}
+	}
 
-  private Point getPoint(double percentage) {
-    double xCoordinateAtPercentage = 0;
-    double yCoordinateAtPercentage = 0;
+	private Point getPoint(double percentage, Point[] controlPoints) {
+		double xCoordinateAtPercentage = 0;
+		double yCoordinateAtPercentage = 0;
 
-    int n = getDegree();
+		int n = getDegree();
 
-    for (double i = 0; i <= n; i++) {
-      double coefficient = coefficients[(int) i];
+		for (double i = 0; i <= n; i++) {
+			double coefficient = coefficients[(int) i];
 
-      double oneMinusT = Math.pow(1 - percentage, n - i);
+			double oneMinusT = Math.pow(1 - percentage, n - i);
 
-      double powerOfT = Math.pow(percentage, i);
+			double powerOfT = Math.pow(percentage, i);
 
-      Point pointI = controlPoints[(int) i];
+			Point pointI = controlPoints[(int) i];
 
-      xCoordinateAtPercentage += (coefficient * oneMinusT * powerOfT * pointI.getX());
-      yCoordinateAtPercentage += (coefficient * oneMinusT * powerOfT * pointI.getY());
-    }
+			xCoordinateAtPercentage += (coefficient * oneMinusT * powerOfT * pointI.getX());
+			yCoordinateAtPercentage += (coefficient * oneMinusT * powerOfT * pointI.getY());
+		}
 
-    return new Point(xCoordinateAtPercentage, yCoordinateAtPercentage);
-  }
+		return new Point(xCoordinateAtPercentage, yCoordinateAtPercentage, getDT(percentage));
+	}
 
-  public Vector2 getVelocity(double percentage) {
-    double leftVelocity = 0;
-    double rightVelocity = 0;
+	private Vector2 getVelocity(double percentage) {
+		double leftVelocity = 0;
+		double rightVelocity = 0;
 
-    int n = getDegree() - 1;
+		int n = getDegree() - 1;
 
-    for (double i = 0; i <= n; i++) {
-      double coefficient = findNumberOfCombination(n, i);
+		for (double i = 0; i <= n; i++) {
+			double coefficient = findNumberOfCombination(n, i);
 
-      double oneMinusT = Math.pow(1 - percentage, n - i);
+			double oneMinusT = Math.pow(1 - percentage, n - i); // TODO Fix math
 
-      double powerOfT = Math.pow(percentage, i);
+			double powerOfT = Math.pow(percentage, i);
 
-      double pointI_x = controlPoints[(int) i + 1].getX() - controlPoints[(int) i].getX();
-      pointI_x = pointI_x * (n + 1);
+			// double dt = getDT(percentage);
+			//
+			// leftVelocity += (coefficient * oneMinusT * powerOfT * (dt));
+			// rightVelocity += (coefficient * oneMinusT * powerOfT * (dt));
+		}
 
-      double pointI_y = controlPoints[(int) i + 1].getY() - controlPoints[(int) i].getY();
-      pointI_y = pointI_y * (n + 1);
+		double slope = rightVelocity / leftVelocity;
 
-      leftVelocity += (coefficient * oneMinusT * powerOfT * (pointI_x));
-      rightVelocity += (coefficient * oneMinusT * powerOfT * (pointI_y));
-    }
+		leftVelocity = leftVelocity - (robotLength / 2 * slope);
+		rightVelocity = rightVelocity + (robotLength / 2 * slope);
 
-    double slope = rightVelocity / leftVelocity;
+		return new Vector2(leftVelocity, rightVelocity);
+	}
 
-    leftVelocity = leftVelocity - (robotLength / 2 * slope);
-    rightVelocity = rightVelocity + (robotLength / 2 * slope);
+	private int getDegree() {
+		return controlPoints.length - 1;
+	}
 
-    return new Vector2(leftVelocity, rightVelocity);
-  }
+	/**
+	 * Given the control points defining the curve, find the derivative at any point
+	 * on the curve
+	 * 
+	 * @param t
+	 *            - percent along curve
+	 * @param controlPoints
+	 *            - control points defining the curve
+	 * @return derivative at point
+	 */
+	private double getDT(double t) {
+		int n = getDegree();
+		double dx = 0;
+		double dy = 0;
+		for (int i = 0; i < n; i++) {
+			double coefficient = findNumberOfCombination(n, i) * Math.pow(t, i) * Math.pow(1 - t, n - i);
+			dx += coefficient * (n + 1) * (controlPoints[i + 1].getX() - controlPoints[i].getX());
+			dy += coefficient * (n + 1) * (controlPoints[i + 1].getY() - controlPoints[i].getY());
+		}
+		return dy / dx;
+	}
 
-  private int getDegree() {
-    return controlPoints.length - 1;
-  }
+	/**
+	 * Offsets control points of a curve
+	 * 
+	 * @param pathPoints
+	 * @param isRightSide
+	 * @return
+	 */
+	private Point[] offsetPoints(Point[] pathPoints, boolean isRightSide) {
+		int n = pathPoints.length;
+		Point[] offsetPoints = new Point[n];
+		for (int i = 0; i < n; i++) {
+			offsetPoints[i] = pathPoints[i].offsetPerpendicular(pathPoints[i].getDerivative(), isRightSide ? robotLength : -robotLength);
+		}
+		return offsetPoints;
+	}
 
-  @Override
-  public Vector2[] getSpeedVectors() {
-    return vectors;
-  }
+	@Override
+	public Vector2[] getSpeedVectors() {
+		return vectors;
+	}
 
-  @Override
-  public Point[] getPathPoints() {
-    return pathPoints;
-  }
+	@Override
+	public Point[] getPathPoints() {
+		return pathPoints;
+	}
 
-  @Override
-  public Point[] getLeftPath() {
-    return new Point[0];
-  }
+	@Override
+	public Point[] getLeftPath() {
+		return leftPoints;
+	}
 
-  @Override
-  public Point[] getRightPath() {
-    return new Point[0];
-  }
-
-  @Override
-  public double[] getDTsOnPath() {
-    return new double[0];
-  }
+	@Override
+	public Point[] getRightPath() {
+		return rightPoints;
+	}
 }
