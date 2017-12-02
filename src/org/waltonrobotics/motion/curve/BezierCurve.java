@@ -16,12 +16,18 @@ public class BezierCurve implements Path {
 
 	private final double robotLength;
 	private final Point[] controlPoints;
-	private final Vector2[] vectors;
 	private double[] coefficients;
 
-	public BezierCurve(int numberOfSteps, double robotLength, Point... controlPoints) {
+	/**
+	 * Creates a new bezier curve
+	 * 
+	 * @param numberOfSteps - the amount of points to define the curve, the resolution of the curve
+	 * @param robotWidth - the width of the robot
+	 * @param controlPoints - the control points that define the robot
+	 */
+	public BezierCurve(int numberOfSteps, double robotWidth, Point... controlPoints) {
 		super();
-		this.robotLength = robotLength;
+		this.robotLength = robotWidth;
 		this.controlPoints = controlPoints;
 
 		updateCoefficients();
@@ -29,22 +35,28 @@ public class BezierCurve implements Path {
 		
 		rightPoints = offsetPoints(pathPoints, true);
 		leftPoints = offsetPoints(pathPoints, false);
-		vectors = getVectors(numberOfSteps);
 	}
 
 	/**
-	 * n! / i!(n-i)!
+	 * Uses the formula to find the value of nCr
+	 * 
+	 * @param n
+	 * @param r
+	 * @return nCr
 	 */
-	private static double findNumberOfCombination(double n, double i) {
+	private static double findNumberOfCombination(double n, double r) {
 		double nFactorial = factorial(n);
-		double iFactorial = factorial(i);
-		double nMinusIFactorial = factorial(n - i);
+		double rFactorial = factorial(r);
+		double nMinusRFactorial = factorial(n - r);
 
-		return nFactorial / (iFactorial * nMinusIFactorial);
+		return nFactorial / (rFactorial * nMinusRFactorial);
 	}
 
 	/**
-	 * for decimal number and integers
+	 * Finds the factorial of any integer or double, d
+	 * 
+	 * @param d
+	 * @return the factorial of d
 	 */
 	private static double factorial(double d) {
 		double r = d - Math.floor(d) + 1;
@@ -54,6 +66,11 @@ public class BezierCurve implements Path {
 		return r;
 	}
 
+	/**
+	 * @param numberOfSteps
+	 * @param controlPoints
+	 * @return an array of Points that define the curve
+	 */
 	private Point[] getCurvePoints(int numberOfSteps, Point[] controlPoints) {
 		Point[] point2DList = new Point[numberOfSteps + 1];
 
@@ -64,16 +81,9 @@ public class BezierCurve implements Path {
 		return point2DList;
 	}
 
-	private Vector2[] getVectors(int numberOfSteps) {
-		Vector2[] point2DList = new Vector2[numberOfSteps + 1];
-
-		for (double i = 0; i <= numberOfSteps; i++) {
-			point2DList[(int) i] = getVelocity(i / ((double) numberOfSteps));
-		}
-
-		return point2DList;
-	}
-
+	/**
+	 * Updates the coefficients used for calculations
+	 */
 	private void updateCoefficients() {
 		int n = getDegree();
 		coefficients = new double[n + 1];
@@ -82,6 +92,13 @@ public class BezierCurve implements Path {
 		}
 	}
 
+	/**
+	 * Returns the point on the curve at any percentage on the line, t
+	 * 
+	 * @param percentage - t
+	 * @param controlPoints
+	 * @return the Point that is at percentage t along the curve
+	 */
 	private Point getPoint(double percentage, Point[] controlPoints) {
 		double xCoordinateAtPercentage = 0;
 		double yCoordinateAtPercentage = 0;
@@ -104,33 +121,9 @@ public class BezierCurve implements Path {
 		return new Point(xCoordinateAtPercentage, yCoordinateAtPercentage, getDT(percentage));
 	}
 
-	private Vector2 getVelocity(double percentage) {
-		double leftVelocity = 0;
-		double rightVelocity = 0;
-
-		int n = getDegree() - 1;
-
-		for (double i = 0; i <= n; i++) {
-			double coefficient = findNumberOfCombination(n, i);
-
-			double oneMinusT = Math.pow(1 - percentage, n - i); // TODO Fix math
-
-			double powerOfT = Math.pow(percentage, i);
-
-			// double dt = getDT(percentage);
-			//
-			// leftVelocity += (coefficient * oneMinusT * powerOfT * (dt));
-			// rightVelocity += (coefficient * oneMinusT * powerOfT * (dt));
-		}
-
-		double slope = rightVelocity / leftVelocity;
-
-		leftVelocity = leftVelocity - (robotLength / 2 * slope);
-		rightVelocity = rightVelocity + (robotLength / 2 * slope);
-
-		return new Vector2(leftVelocity, rightVelocity);
-	}
-
+	/**
+	 * @return the degree of the curve
+	 */
 	private int getDegree() {
 		return controlPoints.length - 1;
 	}
@@ -142,7 +135,6 @@ public class BezierCurve implements Path {
 	 * @param t
 	 *            - percent along curve
 	 * @param controlPoints
-	 *            - control points defining the curve
 	 * @return derivative at point
 	 */
 	private double getDT(double t) {
@@ -162,7 +154,7 @@ public class BezierCurve implements Path {
 	 * 
 	 * @param pathPoints
 	 * @param isRightSide
-	 * @return
+	 * @return an array of Points that defines an offset curve
 	 */
 	private Point[] offsetPoints(Point[] pathPoints, boolean isRightSide) {
 		int n = pathPoints.length;
@@ -171,11 +163,6 @@ public class BezierCurve implements Path {
 			offsetPoints[i] = pathPoints[i].offsetPerpendicular(pathPoints[i].getDerivative(), isRightSide ? robotLength : -robotLength);
 		}
 		return offsetPoints;
-	}
-
-	@Override
-	public Vector2[] getSpeedVectors() {
-		return vectors;
 	}
 
 	@Override

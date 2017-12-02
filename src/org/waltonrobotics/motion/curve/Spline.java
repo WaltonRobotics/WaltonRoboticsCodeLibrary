@@ -30,7 +30,7 @@ public class Spline implements Path {
 	 * Create a new spline
 	 * 
 	 * @param numberOfSteps
-	 *            - the amount of points generated for the path. Like the resolution
+	 *            - the amount of points generated for the path, the resolution of the spline
 	 * @param knots
 	 *            - the fixed points the spline will travel through
 	 */
@@ -118,6 +118,11 @@ public class Spline implements Path {
 		return controlPoints;
 	}
 
+	/**
+	 * Joins the bezier curves defining the spline into intdividual arrays of Points
+	 * 
+	 * @param pathControlPoints - a List of Lists of control points for each curve that make up the spline
+	 */
 	private void joinBezierCurves(List<List<Point>> pathControlPoints) {
 		List<Point> pathPointsAdd = new ArrayList<>();
 		List<Point> leftPointsAdd = new ArrayList<>();
@@ -137,12 +142,6 @@ public class Spline implements Path {
 		this.pathPoints = pathPointsAdd.stream().toArray(Point[]::new);
 		this.leftPoints = leftPointsAdd.stream().toArray(Point[]::new);
 		this.rightPoints = rightPointsAdd.stream().toArray(Point[]::new);
-	}
-
-	@Override
-	public Vector2[] getSpeedVectors() {
-		// TODO Do the math stuff
-		return null;
 	}
 
 	@Override
