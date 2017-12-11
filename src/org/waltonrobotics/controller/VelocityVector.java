@@ -1,11 +1,11 @@
 package org.waltonrobotics.controller;
 
-public class Vector2 {
+public class VelocityVector {
 
 	private final double leftVelocity;
 	private final double rightVelocity;
 
-	public Vector2(double leftVelocity, double rightVelocity) {
+	public VelocityVector(double leftVelocity, double rightVelocity) {
 		this.leftVelocity = leftVelocity;
 		this.rightVelocity = rightVelocity;
 	}

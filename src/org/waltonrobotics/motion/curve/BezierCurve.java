@@ -1,14 +1,14 @@
 package org.waltonrobotics.motion.curve;
 
 import org.waltonrobotics.controller.Point;
-import org.waltonrobotics.controller.Vector2;
+import org.waltonrobotics.controller.VelocityVector;
 import org.waltonrobotics.motion.Path;
 
 /**
  * Resources:
  * https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html
  */
-public class BezierCurve implements Path {
+public class BezierCurve extends Path {
 
 	private final Point[] pathPoints;
 	private final Point[] leftPoints;
@@ -25,8 +25,8 @@ public class BezierCurve implements Path {
 	 * @param robotWidth - the width of the robot
 	 * @param controlPoints - the control points that define the robot
 	 */
-	public BezierCurve(int numberOfSteps, double robotWidth, Point... controlPoints) {
-		super();
+	public BezierCurve(double vCruise, double aMax, int numberOfSteps, double robotWidth, Point... controlPoints) {
+		super(vCruise, aMax);
 		this.robotLength = robotWidth;
 		this.controlPoints = controlPoints;
 
@@ -178,5 +178,10 @@ public class BezierCurve implements Path {
 	@Override
 	public Point[] getRightPath() {
 		return rightPoints;
+	}
+
+	@Override
+	public LimitMode getLimitMode() {
+		return LimitMode.LimitLinearAcceleration;
 	}
 }

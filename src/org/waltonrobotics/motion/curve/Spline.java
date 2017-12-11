@@ -5,8 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.waltonrobotics.controller.Point;
-import org.waltonrobotics.controller.Vector2;
+import org.waltonrobotics.controller.VelocityVector;
 import org.waltonrobotics.motion.Path;
+import org.waltonrobotics.motion.Path.LimitMode;
 
 /**
  * Creates splines that travel through set points, or "knots", and all
@@ -16,7 +17,7 @@ import org.waltonrobotics.motion.Path;
  *
  */
 
-public class Spline implements Path {
+public class Spline extends Path {
 
 	public double robotWidth;
 
@@ -34,7 +35,8 @@ public class Spline implements Path {
 	 * @param knots
 	 *            - the fixed points the spline will travel through
 	 */
-	public Spline(int numberOfSteps, double robotWidth, Point... knots) {
+	public Spline(double vCruise, double aMax, int numberOfSteps, double robotWidth, Point... knots) {
+		super(vCruise, aMax);
 		this.numberOfSteps = numberOfSteps;
 		this.robotWidth = robotWidth;
 		pathControlPoints = computeControlPoints(knots);
@@ -130,7 +132,7 @@ public class Spline implements Path {
 		
 		for (List<Point> curveControlPoints : pathControlPoints) {
 			Point[] controlPoints = curveControlPoints.stream().toArray(Point[]::new);
-			BezierCurve curve = new BezierCurve(numberOfSteps, robotWidth, controlPoints);
+			BezierCurve curve = new BezierCurve(vCruise, aMax, numberOfSteps, robotWidth, controlPoints);
 			
 			Point[] pathPoints = curve.getPathPoints();
 			Point[] leftPoints = curve.getLeftPath();
@@ -157,6 +159,11 @@ public class Spline implements Path {
 	@Override
 	public Point[] getRightPath() {
 		return rightPoints;
+	}
+
+	@Override
+	public LimitMode getLimitMode() {
+		return LimitMode.LimitLinearAcceleration;
 	}
 
 }

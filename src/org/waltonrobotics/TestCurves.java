@@ -20,7 +20,7 @@ public class TestCurves {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Bezier Curve with control points");
-		BezierCurve curve = new BezierCurve(steps, width, a, b, c, d);
+		BezierCurve curve = new BezierCurve(steps, width, a, b, c, d, e);
 		Point[] centerPoints = curve.getPathPoints();
 		Point[] leftPoints = curve.getLeftPath();
 		Point[] rightPoints = curve.getRightPath();
@@ -29,7 +29,7 @@ public class TestCurves {
 					centerPoints[i].getDerivative());
 		}
 		System.out.println("Spline with knots");
-		Spline spline = new Spline(steps, width, a, b, c, d);
+		Spline spline = new Spline(steps, width, a, b, c, d, e);
 		centerPoints = spline.getPathPoints();
 		leftPoints = spline.getLeftPath();
 		rightPoints = spline.getRightPath();
