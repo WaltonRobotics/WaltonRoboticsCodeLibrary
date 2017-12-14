@@ -10,10 +10,10 @@ public class CreateSpline {
 
 	private Spline spline;
 
-	public CreateSpline(int steps, double robotWidth, Point... knots) {
+	public CreateSpline(double vCruise, double aMax, int steps, double robotWidth, Point... knots) {
 		this.steps = steps;
 		this.robotWidth = robotWidth;
-		spline = new Spline(steps, robotWidth, knots);
+		spline = new Spline(vCruise, aMax, steps, robotWidth, knots);
 	}
 
 }

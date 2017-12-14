@@ -31,7 +31,8 @@ public class Spline extends Path {
 	 * Create a new spline
 	 * 
 	 * @param numberOfSteps
-	 *            - the amount of points generated for the path, the resolution of the spline
+	 *            - the amount of points generated for the path, the resolution of
+	 *            the spline
 	 * @param knots
 	 *            - the fixed points the spline will travel through
 	 */
@@ -123,17 +124,20 @@ public class Spline extends Path {
 	/**
 	 * Joins the bezier curves defining the spline into intdividual arrays of Points
 	 * 
-	 * @param pathControlPoints - a List of Lists of control points for each curve that make up the spline
+	 * @param pathControlPoints
+	 *            - a List of Lists of control points for each curve that make up
+	 *            the spline
 	 */
 	private void joinBezierCurves(List<List<Point>> pathControlPoints) {
 		List<Point> pathPointsAdd = new ArrayList<>();
 		List<Point> leftPointsAdd = new ArrayList<>();
 		List<Point> rightPointsAdd = new ArrayList<>();
-		
-		for (List<Point> curveControlPoints : pathControlPoints) {
-			Point[] controlPoints = curveControlPoints.stream().toArray(Point[]::new);
-			BezierCurve curve = new BezierCurve(vCruise, aMax, numberOfSteps, robotWidth, controlPoints);
-			
+
+		for (int i = 0; i < pathControlPoints.size(); i++) {
+			Point[] controlPoints = pathControlPoints.get(i).stream().toArray(Point[]::new);
+			BezierCurve curve = new BezierCurve(vCruise, aMax, i != 0 ? vCruise : 0,
+					i != pathControlPoints.size() - 1 ? vCruise : 0, numberOfSteps, robotWidth, controlPoints);
+
 			Point[] pathPoints = curve.getPathPoints();
 			Point[] leftPoints = curve.getLeftPath();
 			Point[] rightPoints = curve.getRightPath();

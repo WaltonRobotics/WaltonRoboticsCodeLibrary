@@ -19,6 +19,7 @@ public abstract class AbstractRobot {
 
 	/**
 	 * Initializes a RobotConfiguration
+	 * 
 	 * @return - the new RobotConfiguration
 	 */
 	public abstract RobotConfiguration initRobotConfiguration();
@@ -34,5 +35,3 @@ public abstract class AbstractRobot {
 	}
 
 }
-
-

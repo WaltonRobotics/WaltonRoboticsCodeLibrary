@@ -10,9 +10,9 @@ public class CreateBezierCurve {
 
 	private BezierCurve bezierCurve;
 
-	public CreateBezierCurve(int steps, double robotWidth, Point... controlPoints) {
+	public CreateBezierCurve(double vCruise, double aMax, int steps, double robotWidth, Point... controlPoints) {
 		this.steps = steps;
 		this.robotWidth = robotWidth;
-		bezierCurve = new BezierCurve(steps, robotWidth, controlPoints);
+		bezierCurve = new BezierCurve(vCruise, aMax, steps, robotWidth, controlPoints);
 	}
 }

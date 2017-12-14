@@ -1,6 +1,5 @@
 package org.waltonrobotics.motion;
 
-import org.usfirst.frc2974.Testbed.controllers.MotionProvider.LimitMode;
 import org.waltonrobotics.controller.Point;
 import org.waltonrobotics.controller.VelocityVector;
 

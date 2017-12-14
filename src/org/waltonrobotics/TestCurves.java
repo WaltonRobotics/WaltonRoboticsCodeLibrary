@@ -5,7 +5,7 @@ import org.waltonrobotics.motion.curve.BezierCurve;
 import org.waltonrobotics.motion.curve.Spline;
 
 public class TestCurves {
-
+	
 	public static int steps = 100;
 	public static double width = 0;
 
@@ -19,8 +19,9 @@ public class TestCurves {
 	 * Run this class to test outputs of Spline and Bezier Curve
 	 */
 	public static void main(String[] args) {
+		new Robot();
 		System.out.println("Bezier Curve with control points");
-		BezierCurve curve = new BezierCurve(steps, width, a, b, c, d, e);
+		BezierCurve curve = new BezierCurve(1, 1, 1, 1, steps, width, a, b, c, d, e);
 		Point[] centerPoints = curve.getPathPoints();
 		Point[] leftPoints = curve.getLeftPath();
 		Point[] rightPoints = curve.getRightPath();
@@ -29,7 +30,7 @@ public class TestCurves {
 					centerPoints[i].getDerivative());
 		}
 		System.out.println("Spline with knots");
-		Spline spline = new Spline(steps, width, a, b, c, d, e);
+		Spline spline = new Spline(1, 1, steps, width, a, b, c, d, e);
 		centerPoints = spline.getPathPoints();
 		leftPoints = spline.getLeftPath();
 		rightPoints = spline.getRightPath();

@@ -14,7 +14,7 @@ public class Robot extends AbstractRobot {
 	 * This is needed to use our motions
 	 */
 	public static RobotConfiguration config = new RobotConfiguration() {
-
+		
 		@Override
 		public int getNumberOfSteps() {
 			return 100;
@@ -32,7 +32,7 @@ public class Robot extends AbstractRobot {
 
 		@Override
 		public DriveTrainInterface getDriveTrain() {
-			return driveTrain;
+			return new SampleDriveTrain();
 		}
 
 		@Override
@@ -55,9 +55,7 @@ public class Robot extends AbstractRobot {
 			return 20;
 		}
 	};
-
-	public static SampleDriveTrain driveTrain;
-
+	
 	@Override
 	public RobotConfiguration initRobotConfiguration() {
 		return config;

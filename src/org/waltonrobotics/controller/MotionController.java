@@ -25,6 +25,7 @@ public class MotionController {
 	private boolean running;
 	private int nSteps;
 	private int period;
+	private Kinematics currentKinematics;
 
 	/**
 	 * Creates the class that calculates the voltages to set the wheels to
