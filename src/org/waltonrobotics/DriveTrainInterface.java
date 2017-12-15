@@ -4,7 +4,8 @@ import org.waltonrobotics.controller.Path;
 import org.waltonrobotics.controller.RobotPair;
 
 /**
- * Needs to be implemented by the DriveTrain subsystem to use our motions for autonomous
+ * Needs to be implemented by the DriveTrain subsystem to use our motions for
+ * autonomous
  * 
  * @author Russell Newton, Walton Robotics
  *
@@ -36,7 +37,8 @@ public interface DriveTrainInterface {
 	public void cancelControllerMotion();
 
 	/**
-	 * @param paths - paths to add to the MotionController queue
+	 * @param paths
+	 *            - paths to add to the MotionController queue
 	 */
 	public void addControllerMotions(Path... paths);
 

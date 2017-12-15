@@ -9,7 +9,7 @@ package org.waltonrobotics;
 public abstract class AbstractRobot {
 
 	protected static RobotConfiguration robotConfiguration;
-	
+
 	/**
 	 * @return the RobotConfigurtion defined by the Robot class
 	 */

@@ -14,24 +14,26 @@ public abstract class Path {
 	public enum LimitMode {
 		LimitLinearAcceleration, LimitRotationalAcceleration
 	}
-	
+
 	protected double vCruise;
 	protected double aMax;
 
 	/**
-	 * @param vCruise - cruise velocity
-	 * @param aMax - max acceleration
+	 * @param vCruise
+	 *            - cruise velocity
+	 * @param aMax
+	 *            - max acceleration
 	 */
 	protected Path(double vCruise, double aMax) {
-		if(vCruise == 0)
+		if (vCruise == 0)
 			throw new IllegalArgumentException("vCruise cannot be 0");
 		this.vCruise = vCruise;
-		
-		if(aMax == 0)
+
+		if (aMax == 0)
 			throw new IllegalArgumentException("aMax cannot be 0");
 		this.aMax = aMax;
 	}
-	
+
 	/**
 	 * Finds the points that define the path the robot follows
 	 * 
@@ -52,8 +54,8 @@ public abstract class Path {
 	 * @return an array of points that holds the points along the path
 	 */
 	public abstract Point[] getRightPath();
-	
-	/** 
+
+	/**
 	 * @return the LimitMode of the path
 	 */
 	public abstract LimitMode getLimitMode();

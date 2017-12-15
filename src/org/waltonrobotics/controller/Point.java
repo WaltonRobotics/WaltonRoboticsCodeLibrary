@@ -1,7 +1,8 @@
 package org.waltonrobotics.controller;
 
 /**
- * Used to define a point in space with an x, y, derivative, velocity, acceleration, and average encoder distance
+ * Used to define a point in space with an x, y, derivative, velocity,
+ * acceleration, and average encoder distance
  * 
  * @author Russell Newton, Walton Robotics
  *
@@ -22,7 +23,8 @@ public class Point {
 	 * @param y
 	 * @param derivative
 	 * @param state
-	 * @param lCenter - average desired encoder distance
+	 * @param lCenter
+	 *            - average desired encoder distance
 	 */
 	public Point(double x, double y, double derivative, State state, double lCenter, double time) {
 		this.x = x;
@@ -43,7 +45,7 @@ public class Point {
 	public Point(double x, double y, double derivative) {
 		this(x, y, derivative, new State(0, 0, 0), 0, 0);
 	}
-	
+
 	/**
 	 * Can be used to create a point with just x and y
 	 * 
@@ -74,28 +76,38 @@ public class Point {
 	public double getDerivative() {
 		return derivative;
 	}
+
 	/**
 	 * @return the velocity at the point
 	 */
 	public double getVelocity() {
 		return state.getVelocity();
 	}
-	
+
 	/**
 	 * @return the acceleration at the point
 	 */
 	public double getAcceleration() {
 		return state.getAcceleration();
 	}
-	
+
+	/**
+	 * @return encoder length at the point
+	 */
 	public double getLength() {
 		return state.getLength();
 	}
-	
+
+	/**
+	 * @return average encoder length at the point
+	 */
 	public double getLCenter() {
 		return lCenter;
 	}
-	
+
+	/**
+	 * @return time at the point
+	 */
 	public double getTime() {
 		return time;
 	}
@@ -107,9 +119,7 @@ public class Point {
 	 *            - the derivative of the point
 	 * @param distance
 	 *            - the distance to offset the point by
-	 * @param velocity
-	 * @param acceleration
-	 * @param length
+	 * @param state
 	 * @param lCenter
 	 * @param time
 	 * @return the offset point
@@ -122,7 +132,7 @@ public class Point {
 
 		return new Point(this.x + offsetX, this.y + offsetY, angleOfDT, state, lCenter, time);
 	}
-	
+
 	public double distance(Point previousPoint) {
 		return Math.sqrt(Math.pow(this.x - previousPoint.getX(), 2) + Math.pow(this.y - previousPoint.getY(), 2));
 	}

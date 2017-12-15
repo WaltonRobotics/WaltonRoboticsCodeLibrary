@@ -7,7 +7,7 @@ package org.waltonrobotics.controller;
  *
  */
 public class RobotPair {
-	
+
 	private final double left;
 	private final double right;
 
@@ -24,5 +24,5 @@ public class RobotPair {
 	public double getRight() {
 		return right;
 	}
-	
+
 }

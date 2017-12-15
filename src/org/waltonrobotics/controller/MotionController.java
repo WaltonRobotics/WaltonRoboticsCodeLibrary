@@ -26,9 +26,8 @@ public class MotionController {
 	private int currentStep = 0;
 	private int period;
 	private Path currentPath = null;
-	private double[][] staticState;
-	private final double startTime;
-	private final int nSteps;
+	private State[] staticState;
+	private double startTime;
 
 	/**
 	 * Creates the class that calculates the voltages to set the wheels to
@@ -41,12 +40,6 @@ public class MotionController {
 	public MotionController(int period) {
 		controller = new Timer();
 		this.period = period;
-		enableScheduler();
-
-		staticState = new double[][] { { 0, 0, 0 }, { 0, 0, 0 } };
-//		startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-		startTime = 0;
-		nSteps = Robot.getRobotConfiguration().getNumberOfSteps();
 	}
 
 	/**
@@ -85,7 +78,7 @@ public class MotionController {
 
 			RobotPair wheelPositions = Robot.getRobotConfiguration().getDriveTrain().getWheelPositions();
 
-			double[][] currentState;
+			State[] currentState;
 			if (currentPath != null) {
 				currentState = interpolatePosition(time);
 			} else {
@@ -99,16 +92,23 @@ public class MotionController {
 			} catch (ArrayIndexOutOfBoundsException e) {
 				currentPath = paths.pollFirst();
 				Robot.getRobotConfiguration().getDriveTrain().reset();
+				currentStep = 0;
+				//FIXME startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();\
+				staticState = new State[] {
+						new State(Robot.getRobotConfiguration().getDriveTrain().getWheelPositions().getLeft(), 0, 0),
+						new State(Robot.getRobotConfiguration().getDriveTrain().getWheelPositions().getRight(), 0, 0) };
 				return;
 			}
 
 			synchronized (this) {
 				// feed forward
-				leftPower += (kVoltage * currentState[0][1] + kScaling) + kCurrent * currentState[0][2];
-				rightPower += (kVoltage * currentState[1][1] + kScaling) + kCurrent * currentState[1][2];
+				leftPower += (kVoltage * currentState[0].getVelocity() + kScaling)
+						+ kCurrent * currentState[0].getAcceleration();
+				rightPower += (kVoltage * currentState[1].getVelocity() + kScaling)
+						+ kCurrent * currentState[1].getAcceleration();
 				// feed back
-				leftPower += kPower * (currentState[0][0] - wheelPositions.getLeft());
-				rightPower += kPower * (currentState[1][0] - wheelPositions.getRight());
+				leftPower += kPower * (currentState[0].getLength() - wheelPositions.getLeft());
+				rightPower += kPower * (currentState[1].getLength() - wheelPositions.getRight());
 
 			}
 
@@ -120,44 +120,60 @@ public class MotionController {
 	}
 
 	/**
-	 * Calculates parameters used to calculate the speeds of the wheels
+	 * Calculates parameters for wheel powers based off of location between steps
 	 * 
 	 * @param time
 	 *            - current time since start
 	 * @param step
 	 * @return a set of left and right lengths, velocities, and accelerations.
 	 */
-	private double[][] interpolatePosition(double time) {
-		Point[] previousPointSet = new Point[] { currentPath.getLeftPath()[currentStep],
-				currentPath.getPathPoints()[currentStep], currentPath.getRightPath()[currentStep] };
-		Point[] nextPointSet = new Point[] { currentPath.getLeftPath()[currentStep + 1],
-				currentPath.getPathPoints()[currentStep + 1], currentPath.getRightPath()[currentStep + 1] };
+	private State[] interpolatePosition(double time) {
+		Point previousLeft = currentPath.getLeftPath()[currentStep];
+		Point previousRight = currentPath.getRightPath()[currentStep];
+		Point nextLeft = currentPath.getLeftPath()[currentStep + 1];
+		Point nextRight = currentPath.getRightPath()[currentStep + 1];
 
-		double dTime = nextPointSet[0].getTime() - previousPointSet[0].getTime();
-		double p = (nextPointSet[0].getTime() - time) / dTime;
-		double q = (time - previousPointSet[0].getTime()) / dTime;
-		if (p == 0) {
+		// Difference in time
+		double dTime = nextLeft.getTime() - previousLeft.getTime();
+		// Ratio from position to next point
+		double ratioPosToNext = (nextLeft.getTime() - time) / dTime;
+		// Ratio from previous point to position
+		double rationPrevToPos = (time - previousLeft.getTime()) / dTime;
+		if (ratioPosToNext == 0) {
 			return null;
 		}
 
-		double lLeft = previousPointSet[0].getLength() * p + nextPointSet[0].getLength() * q;
-		double vLeft = previousPointSet[0].getVelocity() * p + nextPointSet[0].getVelocity() * q;
-		double aLeft = previousPointSet[0].getAcceleration() * p + nextPointSet[0].getAcceleration() * q;
+		// New values are the average of the previous and next point values
+		// (Average = sum(value * ratio))
+		double lLeft = previousLeft.getLength() * ratioPosToNext + nextLeft.getLength() * rationPrevToPos;
+		double vLeft = previousLeft.getVelocity() * ratioPosToNext + nextLeft.getVelocity() * rationPrevToPos;
+		double aLeft = previousLeft.getAcceleration() * ratioPosToNext + nextLeft.getAcceleration() * rationPrevToPos;
 
-		double lRight = previousPointSet[2].getLength() * p + nextPointSet[2].getLength() * q;
-		double vRight = previousPointSet[2].getVelocity() * p + nextPointSet[2].getVelocity() * q;
-		double aRight = previousPointSet[2].getAcceleration() * p + nextPointSet[2].getAcceleration() * q;
+		double lRight = previousRight.getLength() * ratioPosToNext + nextRight.getLength() * rationPrevToPos;
+		double vRight = previousRight.getVelocity() * ratioPosToNext + nextRight.getVelocity() * rationPrevToPos;
+		double aRight = previousRight.getAcceleration() * ratioPosToNext
+				+ nextRight.getAcceleration() * rationPrevToPos;
 
-		return new double[][] { { lLeft, vLeft, aLeft }, { lRight, vRight, aRight } };
+		return new State[] { new State(lLeft, vLeft, aLeft), new State(lRight, vRight, aRight) };
 	}
 
+	/**
+	 * Removes all queued motions
+	 */
 	public void clearMotions() {
 		paths.clear();
 	}
 
+	/**
+	 * Starts the queue of motions
+	 */
 	public void enableScheduler() {
 		if (!running) {
 			currentStep = 0;
+			//FIXME startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+			staticState = new State[] {
+					new State(Robot.getRobotConfiguration().getDriveTrain().getWheelPositions().getLeft(), 0, 0),
+					new State(Robot.getRobotConfiguration().getDriveTrain().getWheelPositions().getRight(), 0, 0) };
 			Path newPath = paths.poll();
 			if (newPath != null) {
 				controller.scheduleAtFixedRate(new MotionTask(), 0L, (long) period);
@@ -166,14 +182,25 @@ public class MotionController {
 		}
 	}
 
+	/**
+	 * 
+	 * @return Whether or not the queue has ended
+	 */
 	public boolean isFinished() {
 		return false; // FIXME do this
 	}
 
+	/**
+	 * 
+	 * @return Whether or not a motion is running
+	 */
 	public boolean isRunning() {
 		return running;
 	}
 
+	/**
+	 * Pauses the motions,
+	 */
 	public void stopScheduler() {
 		running = false;
 		currentPath = null;
