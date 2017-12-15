@@ -1,13 +1,13 @@
-package org.waltonrobotics.motion.curve;
+package org.waltonrobotics.motion;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.waltonrobotics.controller.Path;
 import org.waltonrobotics.controller.Point;
 import org.waltonrobotics.controller.VelocityVector;
-import org.waltonrobotics.motion.Path;
-import org.waltonrobotics.motion.Path.LimitMode;
+import org.waltonrobotics.controller.Path.LimitMode;
 
 /**
  * Creates splines that travel through set points, or "knots", and all

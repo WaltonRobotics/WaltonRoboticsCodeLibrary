@@ -1,7 +1,7 @@
 package org.waltonrobotics;
 
+import org.waltonrobotics.controller.Path;
 import org.waltonrobotics.controller.RobotPair;
-import org.waltonrobotics.motion.Path;
 
 /**
  * Needs to be implemented by the DriveTrain subsystem to use our motions for autonomous
@@ -44,4 +44,6 @@ public interface DriveTrainInterface {
 	 * @return whether or not the MotionController's queue is empty
 	 */
 	public boolean isControllerFinished();
+
+	public void setSpeeds(double leftPower, double rightPower);
 }

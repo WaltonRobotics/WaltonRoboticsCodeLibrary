@@ -1,7 +1,4 @@
-package org.waltonrobotics.motion;
-
-import org.waltonrobotics.controller.Point;
-import org.waltonrobotics.controller.VelocityVector;
+package org.waltonrobotics.controller;
 
 /**
  * Defines the methods used by a motion path

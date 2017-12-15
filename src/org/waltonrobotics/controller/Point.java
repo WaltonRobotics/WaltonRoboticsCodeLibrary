@@ -1,7 +1,7 @@
 package org.waltonrobotics.controller;
 
 /**
- * Used to define a point in space with an x, y, and a derivative
+ * Used to define a point in space with an x, y, derivative, velocity, acceleration, and average encoder distance
  * 
  * @author Russell Newton, Walton Robotics
  *
@@ -13,7 +13,9 @@ public class Point {
 	private final double derivative;
 	private final double velocity;
 	private final double acceleration;
-	private final double lMidpoint;
+	private final double length;
+	private final double lCenter;
+	private final double time;
 
 	/**
 	 * Used to create a point
@@ -21,27 +23,41 @@ public class Point {
 	 * @param x
 	 * @param y
 	 * @param derivative
-	 * @param velocity - velocity to get to point from last
-	 * @param acceleration - acceleration to get to point from last
-	 * @param lMidpoint - desired average encoder distance to get to that point
+	 * @param velocity
+	 * @param acceleration
+	 * @param length - desired encoder distance
+	 * @param lCenter - average desired encoder distance
 	 */
-	public Point(double x, double y, double derivative, double velocity, double acceleration, double lMidpoint) {
+	public Point(double x, double y, double derivative, double velocity, double acceleration, double length, double lCenter, double time) {
 		this.x = x;
 		this.y = y;
 		this.derivative = derivative;
 		this.velocity = velocity;
 		this.acceleration = acceleration;
-		this.lMidpoint = lMidpoint;
+		this.length = length;
+		this.lCenter = lCenter;
+		this.time = time;
 	}
 
 	/**
-	 * Can be used to create a point without specifying a derivative
+	 * Can be used to create a point with just x, y, and derivative
+	 * 
+	 * @param x
+	 * @param y
+	 * @param derivative
+	 */
+	public Point(double x, double y, double derivative) {
+		this(x, y, derivative, 0, 0, 0, 0, 0);
+	}
+	
+	/**
+	 * Can be used to create a point with just x and y
 	 * 
 	 * @param x
 	 * @param y
 	 */
 	public Point(double x, double y) {
-		this(x, y, 0, 0, 0, 0);
+		this(x, y, 0, 0, 0, 0, 0, 0);
 	}
 
 	/**
@@ -78,8 +94,16 @@ public class Point {
 		return acceleration;
 	}
 	
-	public double getLMidpoint() {
-		return lMidpoint;
+	public double getLength() {
+		return length;
+	}
+	
+	public double getLCenter() {
+		return lCenter;
+	}
+	
+	public double getTime() {
+		return time;
 	}
 
 	/**
@@ -91,19 +115,27 @@ public class Point {
 	 *            - the distance to offset the point by
 	 * @param velocity
 	 * @param acceleration
+	 * @param length
+	 * @param lCenter
+	 * @param time
 	 * @return the offset point
 	 */
-	public Point offsetPerpendicular(double dtAtPoint, double distance, double velocity, double acceleration, double lMidpoint) {
+	public Point offsetPerpendicular(double dtAtPoint, double distance, double velocity, double acceleration, double length, double lCenter, double time) {
 		double angleOfDT = Math.atan(dtAtPoint);
 		double offsetX = distance * Math.cos(angleOfDT + Math.PI / 2); // Finds point at distance along perpendicular
 																		// line
 		double offsetY = distance * Math.sin(angleOfDT + Math.PI / 2);
 
-		return new Point(this.x + offsetX, this.y + offsetY, angleOfDT, velocity, acceleration, lMidpoint);
+		return new Point(this.x + offsetX, this.y + offsetY, angleOfDT, velocity, acceleration, length, lCenter, time);
 	}
 	
-	public double distance(Point nextPoint) {
-		return Math.sqrt(Math.pow(this.x - nextPoint.getX(), 2) + Math.pow(this.y - nextPoint.getY(), 2));
+	public double distance(Point previousPoint) {
+		return Math.sqrt(Math.pow(this.x - previousPoint.getX(), 2) + Math.pow(this.y - previousPoint.getY(), 2));
+	}
+	
+	public Point interpolate(Point previousPoint, double time) {
+		
+		return null;
 	}
 
 }

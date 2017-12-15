@@ -13,6 +13,7 @@ public class Robot extends AbstractRobot {
 	/**
 	 * This is needed to use our motions
 	 */
+	
 	public static RobotConfiguration config = new RobotConfiguration() {
 		
 		@Override
@@ -55,9 +56,9 @@ public class Robot extends AbstractRobot {
 			return 20;
 		}
 	};
-	
+
 	@Override
-	public RobotConfiguration initRobotConfiguration() {
+	protected RobotConfiguration initRobotConfiguration() {
 		return config;
 	}
 

@@ -22,10 +22,10 @@ public abstract class AbstractRobot {
 	 * 
 	 * @return - the new RobotConfiguration
 	 */
-	public abstract RobotConfiguration initRobotConfiguration();
+	protected abstract RobotConfiguration initRobotConfiguration();
 
 	{
-		RobotConfiguration config = getRobotConfiguration();
+		RobotConfiguration config = initRobotConfiguration();
 
 		if (config == null) {
 			throw new RuntimeException("Cannot have a null configuration");

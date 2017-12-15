@@ -1,8 +1,8 @@
 package org.waltonrobotics;
 
 import org.waltonrobotics.controller.MotionController;
+import org.waltonrobotics.controller.Path;
 import org.waltonrobotics.controller.RobotPair;
-import org.waltonrobotics.motion.Path;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -18,28 +18,29 @@ import edu.wpi.first.wpilibj.Encoder;
  */
 public class SampleDriveTrain implements DriveTrainInterface {
 
-//	private Encoder rightEncoder = new Encoder(new DigitalInput(0), new DigitalInput(1));
-//	private Encoder leftEncoder = new Encoder(new DigitalInput(2), new DigitalInput(3));
+	// private Encoder rightEncoder = new Encoder(new DigitalInput(0), new
+	// DigitalInput(1));
+	// private Encoder leftEncoder = new Encoder(new DigitalInput(2), new
+	// DigitalInput(3));
 
 	private MotionController controller;
 
 	public SampleDriveTrain() {
-		controller = new MotionController(Robot.getRobotConfiguration().getNumberOfSteps(),
-				Robot.getRobotConfiguration().getMotionsCalculationPeriod());
-//		leftEncoder.setDistancePerPulse(Robot.getRobotConfiguration().getDistancePerPulse());
-//		rightEncoder.setDistancePerPulse(-Robot.getRobotConfiguration().getDistancePerPulse());
+		controller = new MotionController(Robot.getRobotConfiguration().getMotionsCalculationPeriod());
+		// leftEncoder.setDistancePerPulse(Robot.getRobotConfiguration().getDistancePerPulse());
+		// rightEncoder.setDistancePerPulse(-Robot.getRobotConfiguration().getDistancePerPulse());
 	}
 
 	@Override
 	public RobotPair getWheelPositions() {
-		//return new RobotPair(leftEncoder.getDistance(), rightEncoder.getDistance());
+		// return new RobotPair(leftEncoder.getDistance(), rightEncoder.getDistance());
 		return new RobotPair(0, 0);
 	}
 
 	@Override
 	public void reset() {
-//		leftEncoder.reset();
-//		rightEncoder.reset();
+		// leftEncoder.reset();
+		// rightEncoder.reset();
 	}
 
 	@Override
@@ -66,5 +67,10 @@ public class SampleDriveTrain implements DriveTrainInterface {
 	@Override
 	public boolean isControllerFinished() {
 		return controller.isFinished();
+	}
+
+	@Override
+	public void setSpeeds(double leftSpeed, double rightSpeed) {
+		// TODO Auto-generated method stub
 	}
 }
