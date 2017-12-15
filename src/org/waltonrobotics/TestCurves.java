@@ -4,17 +4,21 @@ import org.waltonrobotics.controller.Point;
 import org.waltonrobotics.motion.BezierCurve;
 import org.waltonrobotics.motion.Spline;
 
+/**
+ * Run this class to see how changing points affects the curves
+ * 
+ * @author Russell Newton, Walton Robotics
+ *
+ */
 public class TestCurves {
 
+	//Change these to see their effect
 	public static int steps = 100;
 	public static double width = 0.25;
-
 	private static Point[] points = new Point[] { new Point(0, 0), new Point(0, 5), new Point(3, 6), new Point(5, 3),
 			new Point(10, 10) };
+	
 
-	/**
-	 * Run this class to test outputs of Spline and Bezier Curve
-	 */
 	public static void main(String[] args) {
 		new Robot();
 		System.out.println("Bezier Curve:");

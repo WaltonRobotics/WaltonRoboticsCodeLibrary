@@ -7,6 +7,7 @@ import org.waltonrobotics.controller.RobotPair;
  * Needs to be implemented by the DriveTrain subsystem to use our motions for
  * autonomous
  * 
+ * @author Marius Juston, Walton Robotics
  * @author Russell Newton, Walton Robotics
  *
  */
@@ -47,5 +48,11 @@ public interface DriveTrainInterface {
 	 */
 	public boolean isControllerFinished();
 
+	/**
+	 * Sets the motor speeds
+	 * 
+	 * @param leftPower
+	 * @param rightPower
+	 */
 	public void setSpeeds(double leftPower, double rightPower);
 }

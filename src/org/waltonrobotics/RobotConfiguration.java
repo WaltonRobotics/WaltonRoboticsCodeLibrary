@@ -1,5 +1,12 @@
 package org.waltonrobotics;
 
+/**
+ * Used in the Robot class to store important values for motion profiling
+ * 
+ * @author Marius Juston, Walton Robotics
+ * @author Russell Newton, Walton Robotics
+ *
+ */
 public interface RobotConfiguration {
 	public double getDistancePerPulse();
 

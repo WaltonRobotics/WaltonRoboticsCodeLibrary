@@ -3,7 +3,9 @@ package org.waltonrobotics;
 /**
  * This is an example Robot class. To use our motions for autonomous, you need
  * to extend AbstractRobot and create a RobotConfiguration, as seen in this
- * class. Everything here needs to be here to be able to use the motions
+ * class. Everything here needs to be here to be able to use the motions.
+ * 
+ * <em>YOU NEED YOUR ROBOT CLASS TO BE CALLED ROBOT</em>
  * 
  * @author Russell Newton, Walton Robotics
  *

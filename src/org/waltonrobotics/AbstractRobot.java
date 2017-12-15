@@ -1,9 +1,9 @@
 package org.waltonrobotics;
 
 /**
- * Needs to be extended by the Robot class to use our motions for autonomous
+ * This needs to be extended by the Robot class to use our motions for autonomous
  * 
- * @author Russell Newton, Walton Robotics
+ * @author Marius Juston, Walton Robotics
  *
  */
 public abstract class AbstractRobot {

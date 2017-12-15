@@ -7,6 +7,12 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import org.waltonrobotics.Robot;
 
+/**
+ * Sends power to the wheels
+ * 
+ * @author Russell Newton, Walton Robotics
+ *
+ */
 public class MotionController {
 
 	private class MotionTask extends TimerTask {

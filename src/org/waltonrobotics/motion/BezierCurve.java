@@ -9,7 +9,9 @@ import org.waltonrobotics.controller.State;
 /**
  * Resources:
  * 
- * @see https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html
+ * @see {@link https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html}
+ * @author Marius Juston, Walton Robotics
+ * @author Russell Newton, Walton Robotics 
  */
 public class BezierCurve extends Path {
 
