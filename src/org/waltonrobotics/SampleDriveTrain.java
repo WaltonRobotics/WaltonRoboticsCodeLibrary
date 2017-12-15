@@ -18,10 +18,10 @@ import edu.wpi.first.wpilibj.Encoder;
  */
 public class SampleDriveTrain implements DriveTrainInterface {
 
-	// private Encoder rightEncoder = new Encoder(new DigitalInput(0), new
-	// DigitalInput(1));
-	// private Encoder leftEncoder = new Encoder(new DigitalInput(2), new
-	// DigitalInput(3));
+	// private Encoder rightEncoder = RobotMap.rightEncoder;
+	// private Encoder leftEncoder = RobotMap.leftEncoder;
+	// private CANTalon rightMotor = RobotMap.rightMotor;
+	// private CANTalon leftMotor = RobotMap.leftMotor;
 
 	private MotionController controller;
 
@@ -71,6 +71,7 @@ public class SampleDriveTrain implements DriveTrainInterface {
 
 	@Override
 	public void setSpeeds(double leftSpeed, double rightSpeed) {
-		// TODO Auto-generated method stub
+		// leftMotor.setSpeed(leftSpeed);
+		// rightMotor.setSpeed(rightSpeed);
 	}
 }

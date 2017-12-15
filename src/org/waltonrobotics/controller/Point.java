@@ -11,9 +11,7 @@ public class Point {
 	private final double x;
 	private final double y;
 	private final double derivative;
-	private final double velocity;
-	private final double acceleration;
-	private final double length;
+	private final State state;
 	private final double lCenter;
 	private final double time;
 
@@ -23,18 +21,14 @@ public class Point {
 	 * @param x
 	 * @param y
 	 * @param derivative
-	 * @param velocity
-	 * @param acceleration
-	 * @param length - desired encoder distance
+	 * @param state
 	 * @param lCenter - average desired encoder distance
 	 */
-	public Point(double x, double y, double derivative, double velocity, double acceleration, double length, double lCenter, double time) {
+	public Point(double x, double y, double derivative, State state, double lCenter, double time) {
 		this.x = x;
 		this.y = y;
 		this.derivative = derivative;
-		this.velocity = velocity;
-		this.acceleration = acceleration;
-		this.length = length;
+		this.state = state;
 		this.lCenter = lCenter;
 		this.time = time;
 	}
@@ -47,7 +41,7 @@ public class Point {
 	 * @param derivative
 	 */
 	public Point(double x, double y, double derivative) {
-		this(x, y, derivative, 0, 0, 0, 0, 0);
+		this(x, y, derivative, new State(0, 0, 0), 0, 0);
 	}
 	
 	/**
@@ -57,7 +51,7 @@ public class Point {
 	 * @param y
 	 */
 	public Point(double x, double y) {
-		this(x, y, 0, 0, 0, 0, 0, 0);
+		this(x, y, 0, new State(0, 0, 0), 0, 0);
 	}
 
 	/**
@@ -84,18 +78,18 @@ public class Point {
 	 * @return the velocity at the point
 	 */
 	public double getVelocity() {
-		return velocity;
+		return state.getVelocity();
 	}
 	
 	/**
 	 * @return the acceleration at the point
 	 */
 	public double getAcceleration() {
-		return acceleration;
+		return state.getAcceleration();
 	}
 	
 	public double getLength() {
-		return length;
+		return state.getLength();
 	}
 	
 	public double getLCenter() {
@@ -120,22 +114,17 @@ public class Point {
 	 * @param time
 	 * @return the offset point
 	 */
-	public Point offsetPerpendicular(double dtAtPoint, double distance, double velocity, double acceleration, double length, double lCenter, double time) {
+	public Point offsetPerpendicular(double dtAtPoint, double distance, State state, double lCenter, double time) {
 		double angleOfDT = Math.atan(dtAtPoint);
 		double offsetX = distance * Math.cos(angleOfDT + Math.PI / 2); // Finds point at distance along perpendicular
 																		// line
 		double offsetY = distance * Math.sin(angleOfDT + Math.PI / 2);
 
-		return new Point(this.x + offsetX, this.y + offsetY, angleOfDT, velocity, acceleration, length, lCenter, time);
+		return new Point(this.x + offsetX, this.y + offsetY, angleOfDT, state, lCenter, time);
 	}
 	
 	public double distance(Point previousPoint) {
 		return Math.sqrt(Math.pow(this.x - previousPoint.getX(), 2) + Math.pow(this.y - previousPoint.getY(), 2));
-	}
-	
-	public Point interpolate(Point previousPoint, double time) {
-		
-		return null;
 	}
 
 }

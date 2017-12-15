@@ -9,8 +9,8 @@ public class TestCurves {
 	public static int steps = 100;
 	public static double width = 0.25;
 
-	private static Point[] points = new Point[] { new Point(0, 0), new Point(0, 5), new Point(3, 6), new Point(-5, 3),
-			new Point(-10, 3) };
+	private static Point[] points = new Point[] { new Point(0, 0), new Point(0, 5), new Point(3, 6), new Point(5, 3),
+			new Point(10, 10) };
 
 	/**
 	 * Run this class to test outputs of Spline and Bezier Curve

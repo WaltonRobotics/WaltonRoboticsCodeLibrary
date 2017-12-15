@@ -4,6 +4,7 @@ import org.waltonrobotics.DriveTrainInterface;
 import org.waltonrobotics.Robot;
 import org.waltonrobotics.controller.Path;
 import org.waltonrobotics.controller.Point;
+import org.waltonrobotics.controller.State;
 
 /**
  * Resources:
@@ -195,23 +196,25 @@ public class BezierCurve extends Path {
 		int n = pathPoints.length;
 		Point[] offsetPoints = new Point[n];
 		for (int i = 0; i < n; i++) {
-			//calculate speeds and distances for offset points
+			// calculate speeds and distances for offset points
 			double[][] speeds;
 			if (i == 0) {
-				speeds = new double[][] { { startVelocity, startVelocity, 0 }, { 0, 0, startLCenter, 0 } };
+				speeds = new double[][] { { startVelocity, startVelocity, aMax }, { 0, 0, startLCenter, 0 } };
 			} else {
 				speeds = calculateSpeeds(pathPoints[i - 1], pathPoints[i], i);
 			}
-			//store the LCenter in the center point used
-			pathPoints[i] = new Point(pathPoints[i].getX(), pathPoints[i].getY(), pathPoints[i].getDerivative(), 0, 0, 0,
-					speeds[1][2], 0);
-			//create the new offset point
+			// store the LCenter in the center point used
+			pathPoints[i] = new Point(pathPoints[i].getX(), pathPoints[i].getY(), pathPoints[i].getDerivative(),
+					new State(0, 0, 0), speeds[1][2], 0);
+			State leftState = new State(speeds[1][0], speeds[0][0], speeds[0][2]);
+			State rightState = new State(speeds[1][1], speeds[0][1], speeds[0][2]);
+			// create the new offset point
 			if (isRightSide) {
 				offsetPoints[i] = pathPoints[i].offsetPerpendicular(pathPoints[i].getDerivative(), robotLength,
-						speeds[0][1], speeds[0][2], speeds[1][1], speeds[1][2], speeds[1][3]);
+						leftState, speeds[1][2], speeds[1][3]);
 			} else {
 				offsetPoints[i] = pathPoints[i].offsetPerpendicular(pathPoints[i].getDerivative(), -robotLength,
-						speeds[0][0], speeds[0][2], speeds[1][0], speeds[1][2], speeds[1][3]);
+						rightState, speeds[1][2], speeds[1][3]);
 			}
 		}
 		return offsetPoints;

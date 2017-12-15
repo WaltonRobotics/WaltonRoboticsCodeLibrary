@@ -98,6 +98,7 @@ public class MotionController {
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
 				currentPath = paths.pollFirst();
+				Robot.getRobotConfiguration().getDriveTrain().reset();
 				return;
 			}
 
