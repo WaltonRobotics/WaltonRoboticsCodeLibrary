@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output/>
+    <orderEntry type="inheritedJdk"/>
+    <content url="file://$MODULE_DIR$/">
+      <excludeFolder url="file://$MODULE_DIR$/.gradle"/>
+      <excludeFolder url="file://$MODULE_DIR$/build"/>
+    </content>
+    <orderEntry type="sourceFolder" forTests="false"/>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/wpilibj/wpilibj-java/2019.4.1/wpilibj-java-2019.4.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/wpilibj/wpilibj-java/2019.4.1/wpilibj-java-2019.4.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/ntcore/ntcore-java/2019.4.1/ntcore-java-2019.4.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/ntcore/ntcore-java/2019.4.1/ntcore-java-2019.4.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/wpiutil/wpiutil-java/2019.4.1/wpiutil-java-2019.4.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/wpiutil/wpiutil-java/2019.4.1/wpiutil-java-2019.4.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/thirdparty/frc2019/opencv/opencv-java/3.4.4-4/opencv-java-3.4.4-4.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/thirdparty/frc2019/opencv/opencv-java/3.4.4-4/opencv-java-3.4.4-4-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/cscore/cscore-java/2019.4.1/cscore-java-2019.4.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/cscore/cscore-java/2019.4.1/cscore-java-2019.4.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/cameraserver/cameraserver-java/2019.4.1/cameraserver-java-2019.4.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/cameraserver/cameraserver-java/2019.4.1/cameraserver-java-2019.4.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/hal/hal-java/2019.4.1/hal-java-2019.4.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Public/frc2019/maven/edu/wpi/first/hal/hal-java/2019.4.1/hal-java-2019.4.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-all/0.37.1/715dd65121e8de1677715f0fd3377d25f002cc74/ejml-all-0.37.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-all/0.37.1/f5638444e4b7661581b73f7a133cb9de9990940c/ejml-all-0.37.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-simple/0.37.1/608b37b82fdf0f40a2037078e9719e45eb2e9e55/ejml-simple-0.37.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-simple/0.37.1/46d0de1c1c75c164fa7f804f6e07dd308a921431/ejml-simple-0.37.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-fdense/0.37.1/23d10ef2563319265859cd8f18a0649ae6584752/ejml-fdense-0.37.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-fdense/0.37.1/faae4183bb08b2cf08623325c50d210f14ab247e/ejml-fdense-0.37.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-dsparse/0.37.1/a44cd3da2e27a1229bf2b54a61d8caf95088d9db/ejml-dsparse-0.37.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-dsparse/0.37.1/e7fee220861a39764c3ee06660bdb97bcdd54bf5/ejml-dsparse-0.37.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-ddense/0.37.1/b0bd80ec9a67ad70c557b226ea29e70ba66a3550/ejml-ddense-0.37.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-ddense/0.37.1/eed6fe3ddb7aabbb9de36cb981b54b3745ca10e4/ejml-ddense-0.37.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-cdense/0.37.1/33dfb635d41295ac1024b1307df44ca011f6c88e/ejml-cdense-0.37.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-cdense/0.37.1/931b172f8c4296992d3a94f19fcb7e6f7f3b13e9/ejml-cdense-0.37.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-zdense/0.37.1/7838340239649a172934de232964f30508bfcac3/ejml-zdense-0.37.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-zdense/0.37.1/e511c6a43c9fea7ec2454de9325674d194dafac4/ejml-zdense-0.37.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-core/0.37.1/803d2ea685b4f40d9196281bfc65c8ebb768cc51/ejml-core-0.37.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.ejml/ejml-core/0.37.1/e23175e62443fa39bf6a1c1c684a6514133728d9/ejml-core-0.37.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/25ea2e8b0c338a877313bd4672d3fe056ea78f0d/jsr305-3.0.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/b19b5927c2c25b6c70f093767041e641ae0b1b35/jsr305-3.0.2-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/a6c32b40bf3d76eca54e3c601e5d1470c86fcdfa/junit-4.12-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/42a25dc3219429f0e5d060061f71acb49bf010a0/hamcrest-core-1.3.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Russell/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/1dc37250fbc78e23a65a67fbbaf71d2e9cbc3c0b/hamcrest-core-1.3-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+  <component name="ModuleRootManager"/>
+</module>
