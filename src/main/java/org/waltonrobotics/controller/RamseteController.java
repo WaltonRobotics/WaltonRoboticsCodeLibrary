@@ -19,21 +19,21 @@ import org.waltonrobotics.motion.Path;
 public class RamseteController extends MotionController {
 
   private final boolean useMotorProfiles;
-  private final boolean useDrivetrainSuppliedPose;
+  private final boolean useDrivetrainSuppliedHeading;
 
   /**
    * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
    * @param setSpeeds something implementing the SetSpeeds interface
    * @param useMotorProfiles whether or not you're paying much attention to motor profiles. Defaults
    * to false.
-   * @param useDrivetrainSuppliedPose
+   * @param useDrivetrainSuppliedHeading
    * @param usingCamera whether or not you're using a camera. Defaults to false
    */
   public RamseteController(RobotConfig robotConfig, SetSpeeds setSpeeds, boolean useMotorProfiles,
-      boolean useDrivetrainSuppliedPose, Supplier<Boolean> usingCamera) {
+      boolean useDrivetrainSuppliedHeading, Supplier<Boolean> usingCamera) {
     super(robotConfig, setSpeeds, usingCamera);
     this.useMotorProfiles = useMotorProfiles;
-    this.useDrivetrainSuppliedPose = useDrivetrainSuppliedPose;
+    this.useDrivetrainSuppliedHeading = useDrivetrainSuppliedHeading;
   }
 
   /**
@@ -69,15 +69,15 @@ public class RamseteController extends MotionController {
     double omegaCommand = targetOmega +
         robotConfig.getKBeta() * targetVelocity * sinc(errorVector.getAngle()) *
             errorVector.getXTrack() + dynamicConstant * errorVector.getAngle();
-    System.out.println(velocityCommand + " " + omegaCommand);
+//    System.out.println(velocityCommand + " " + omegaCommand);
 
     //And here starts the help from 254
     double leftCommand = (velocityCommand - omegaCommand * robotConfig.effectiveWheelbaseRadius())
-        /*/ robotConfig.wheelRadius()*/;
+        / robotConfig.wheelRadius();
     double rightCommand =
         (velocityCommand + omegaCommand * robotConfig.effectiveWheelbaseRadius())
-            /*/ robotConfig.wheelRadius()*/;
-    System.out.println(leftCommand + " " + rightCommand);
+            / robotConfig.wheelRadius();
+//    System.out.println(leftCommand + " " + rightCommand);
 
     double leftVoltage;
     double rightVoltage;
@@ -120,11 +120,12 @@ public class RamseteController extends MotionController {
   @Override
   public Pose updateActualPosition(RobotPair wheelPositions, RobotPair previousWheelPositions,
       Pose estimatedActualPosition) {
-    if(!useDrivetrainSuppliedPose) {
+    if(!useDrivetrainSuppliedHeading) {
       return super
           .updateActualPosition(wheelPositions, previousWheelPositions, estimatedActualPosition);
     } else {
-      return setSpeeds.getSensorCalculatedPose();
+      return super.updateActualPosition(wheelPositions, previousWheelPositions,
+          estimatedActualPosition, setSpeeds.getSensorCalculatedHeading(), null);
     }
   }
 }

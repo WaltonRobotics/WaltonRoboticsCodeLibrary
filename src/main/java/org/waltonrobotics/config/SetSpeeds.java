@@ -14,7 +14,7 @@ public interface SetSpeeds {
    * update the actual position, assuming the useDrivetrainSuppliedPose parameter is set to true. If
    * this is to be used, return a pose created from sensors.
    */
-  Pose getSensorCalculatedPose();
+  double getSensorCalculatedHeading();
 
 
 }

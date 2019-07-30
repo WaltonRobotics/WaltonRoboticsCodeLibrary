@@ -10,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import org.waltonrobotics.config.RobotConfig;
 import org.waltonrobotics.config.SetSpeeds;
 import org.waltonrobotics.metadata.CameraData;
@@ -55,6 +56,7 @@ public class MotionController {
   private double integratedAngleError;
   private int pathNumber;
   private CameraReader cameraReader = new CameraReader();
+  private final boolean reverseAngle;
 
   /**
    * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
@@ -66,6 +68,7 @@ public class MotionController {
       Supplier<Boolean> usingCamera) {
     this.setSpeeds = setSpeeds;
     this.usingCamera = usingCamera;
+    this.reverseAngle = robotConfig.reverseAngleCalculation();
     running = false;
     Path.setRobotWidth(robotWidth);
 
@@ -139,26 +142,31 @@ public class MotionController {
       }
 
       @Override
-      public Pose getSensorCalculatedPose() {
-        return new Pose();
+      public double getSensorCalculatedHeading() {
+        return 0;
       }
     }, usingCamera);
   }
 
   /**
-   * Updates where the robot thinks it is, based off of the encoder lengths
+   * Updates where the robot thinks it is, based off of the encoders and any sensor input
    */
   public Pose updateActualPosition(RobotPair wheelPositions,
       RobotPair previousWheelPositions,
-      Pose estimatedActualPosition) {
+      Pose estimatedActualPosition, @Nullable Double sensorHeading, @Nullable Pose sensorPose) {
     double arcLeft = wheelPositions.getLeft() - previousWheelPositions.getLeft();
     double arcRight = wheelPositions.getRight() - previousWheelPositions.getRight();
-    double dAngle = (arcRight - arcLeft) / Path.getRobotWidth();
+    double dAngle = (arcRight - arcLeft) / Path.getRobotWidth() * (reverseAngle ? -1 : 1);
     double arcCenter = (arcRight + arcLeft) / 2.0;
     double dX;
     double dY;
 
-    double currentAngle = estimatedActualPosition.getAngle();
+    double currentAngle;
+    if(sensorHeading == null) {
+      currentAngle = estimatedActualPosition.getAngle();
+    } else {
+      currentAngle = sensorHeading;
+    }
 
     if (Math.abs(dAngle) < 0.01) {
       dX = arcCenter * StrictMath.cos(currentAngle);
@@ -175,8 +183,23 @@ public class MotionController {
     }
 
     estimatedActualPosition = estimatedActualPosition.offset(dX, dY, dAngle);
+    if(sensorHeading != null) {
+      estimatedActualPosition = new Pose(estimatedActualPosition.getX(),
+          estimatedActualPosition.getY(), sensorHeading);
+    }
+    if(sensorPose != null) {
+      estimatedActualPosition = new Pose(sensorPose.getX(), sensorPose.getY(),
+          estimatedActualPosition.getAngle());
+    }
 
     return estimatedActualPosition;
+  }
+
+  public Pose updateActualPosition(RobotPair wheelPositions,
+      RobotPair previousWheelPositions,
+      Pose estimatedActualPosition) {
+    return updateActualPosition(wheelPositions, previousWheelPositions, estimatedActualPosition,
+        null, null);
   }
 
   /**

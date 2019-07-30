@@ -97,6 +97,8 @@ public abstract class RobotConfig {
     return 0;
   }
 
+  public abstract boolean reverseAngleCalculation();
+
   /**
    * return the width of t he robot from teh outside of the wheel on the left side and the right
    * side

@@ -35,15 +35,15 @@ public abstract class AbstractDrivetrain extends Subsystem {
   private PathData previousState;
 
   public AbstractDrivetrain(RobotConfig robotConfig) {
-    this(robotConfig, () -> false, ControllerType.POWERUP);
+    this(robotConfig, () -> false, ControllerType.POWERUP, false, false);
   }
 
   public AbstractDrivetrain(RobotConfig robotConfic, ControllerType controllerType) {
-    this(robotConfic, () -> false, controllerType);
+    this(robotConfic, () -> false, controllerType, false, false);
   }
 
   public AbstractDrivetrain(RobotConfig robotConfic, Supplier<Boolean> usingCamera) {
-    this(robotConfic, usingCamera, ControllerType.POWERUP);
+    this(robotConfic, usingCamera, ControllerType.POWERUP, false, false);
   }
 
   /**
@@ -51,7 +51,7 @@ public abstract class AbstractDrivetrain extends Subsystem {
    * MotionController
    */
   public AbstractDrivetrain(RobotConfig robotConfig, Supplier<Boolean> usingCamera,
-      ControllerType controllerType) {
+      ControllerType controllerType, boolean useMotorProfiles, boolean useDrivetrainSuppliedHeading) {
     this.robotConfig = robotConfig;
     this.controllerType = controllerType;
     if ((robotConfig.getKK() == 0) && (robotConfig.getKV() == 0) && (robotConfig.getKL() == 0)) {
@@ -76,10 +76,10 @@ public abstract class AbstractDrivetrain extends Subsystem {
               }
 
               @Override
-              public Pose getSensorCalculatedPose() {
-                return getNavXPose();
+              public double getSensorCalculatedHeading() {
+                return getNavXHeading();
               }
-            }, usingCamera);
+            }, useMotorProfiles, useDrivetrainSuppliedHeading, usingCamera);
         break;
       default:
         controller =
@@ -95,8 +95,8 @@ public abstract class AbstractDrivetrain extends Subsystem {
               }
 
               @Override
-              public Pose getSensorCalculatedPose() {
-                return new Pose();
+              public double getSensorCalculatedHeading() {
+                return getNavXHeading();
               }
             }, usingCamera);
         break;
@@ -305,8 +305,8 @@ public abstract class AbstractDrivetrain extends Subsystem {
    *
    * @return a pose created form the navX data
    */
-  protected Pose getNavXPose() {
-    return new Pose();
+  protected double getNavXHeading() {
+    return 0;
   }
 
   public enum ControllerType {
