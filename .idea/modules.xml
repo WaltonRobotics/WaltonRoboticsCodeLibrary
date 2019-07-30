@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Actually Simple Splines (For Library).iml" filepath="$PROJECT_DIR$/Actually Simple Splines (For Library).iml" />
+      <module fileurl="file://$PROJECT_DIR$/WRTLib.iml" filepath="$PROJECT_DIR$/WRTLib.iml" />
     </modules>
   </component>
 </project>
