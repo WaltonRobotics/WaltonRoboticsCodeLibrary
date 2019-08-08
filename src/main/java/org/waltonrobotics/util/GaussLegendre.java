@@ -14,7 +14,6 @@ public class GaussLegendre {
    * interval [lowerBound, upperBound]. The constructor creates nodes and weights and then
    * initializes all fields of the instance.
    *
-   * @param numberOfPoints, lowerBound, upperBound
    * @author Alessandro Gnoatto based on Matlab code by Greg von Winckel.
    */
   public GaussLegendre(int numberOfPoints, double lowerBound, double upperBound) {

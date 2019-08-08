@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WRTLib.iml" filepath="$PROJECT_DIR$/WRTLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WaltonRoboticsCodeLibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/WaltonRoboticsCodeLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WaltonRoboticsCodeLibrary.main.iml" filepath="$PROJECT_DIR$/.idea/modules/WaltonRoboticsCodeLibrary.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WaltonRoboticsCodeLibrary.test.iml" filepath="$PROJECT_DIR$/.idea/modules/WaltonRoboticsCodeLibrary.test.iml" />
     </modules>
   </component>
 </project>

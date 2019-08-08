@@ -26,7 +26,7 @@ import org.waltonrobotics.util.GaussLegendre;
  * href=https://en.wikipedia.org/wiki/B%C3%A9zier_curve>Wikipedia page on Bezier Curves</a> <br> <a
  * href=https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html>Bezier curve
  * equations for N number of control points</a>
- * <p/>
+ * </p>
  *
  * @author Marius Juston, Walton Robotics
  * @author Russell Newton, Walton Robotics

@@ -13,7 +13,7 @@ import org.ejml.interfaces.decomposition.EigenDecomposition_F64;
 import org.waltonrobotics.metadata.Pose;
 
 /**
- * @author Russell Newton
+ * @author Russell Newton, Walton Robotics
  **/
 public abstract class Polynomial {
 
@@ -48,7 +48,7 @@ public abstract class Polynomial {
   /**
    * Compute the coefficients of the polynomial resulting from squaring the input polynomial.
    *
-   * @param coefficients - Coefficients of the input polynomial, from least to most significant.
+   * @param coefficients Coefficients of the input polynomial, from least to most significant.
    * @return The resulting coefficients, from least to most significant.
    */
   public static DMatrixRMaj square(double... coefficients) {
@@ -58,7 +58,7 @@ public abstract class Polynomial {
   /**
    * Find the coefficients of the derivative of a polynomial.
    *
-   * @param coefficients - The input coefficients.
+   * @param coefficients The input coefficients.
    * @return The coefficients of the derivative polynomial.
    */
   public static DMatrixRMaj derivativeCoefficients(DMatrixRMaj coefficients) {
@@ -80,7 +80,7 @@ public abstract class Polynomial {
    * Coefficients are ordered from least to most significant, e.g: y = c[0] + x*c[1] + x*x*c[2].
    * </p><br>
    *
-   * <a href=https://ejml.org/wiki/index.php?title=Example_Polynomial_Roots>Source</a>
+   * <a href="https://ejml.org/wiki/index.php?title=Example_Polynomial_Roots">Source</a>
    *
    * @param coefficients Coefficients of the polynomial.
    * @return The roots of the polynomial
@@ -150,8 +150,8 @@ public abstract class Polynomial {
    * Finds t corresponding to the point closest to {@code inputPoint} on the parametric polynomial
    * curve defined by {@code coefficientsX} and {@code coefficientsY}.
    *
-   * @param lowBound - low bound for t
-   * @param highBound - high bound for t
+   * @param lowBound low bound for t
+   * @param highBound high bound for t
    */
   public static Pose minimizeDistance(Pose inputPose, double lowBound, double highBound,
       double[] coefficientsX, double[] coefficientsY) {
@@ -198,8 +198,8 @@ public abstract class Polynomial {
    * Finds x corresponding to the point closest to {@code inputPoint} on the parametric polynomial
    * curve defined by {@code coefficients}.
    *
-   * @param lowBound - low bound for x
-   * @param highBound - high bound for x
+   * @param lowBound low bound for x
+   * @param highBound high bound for x
    */
   public static Pose minimizeDistance(Pose inputPose, double lowBound, double highBound,
       double[] coefficients) {
@@ -210,9 +210,9 @@ public abstract class Polynomial {
   /**
    * Returns the point on a parametric at {@code t}.
    *
-   * @param coefficientsX - the coefficients defining the x polynomial, from least significant to
+   * @param coefficientsX the coefficients defining the x polynomial, from least significant to
    * most.
-   * @param coefficientsY - the coefficients defining the y polynomial, from least significant to
+   * @param coefficientsY the coefficients defining the y polynomial, from least significant to
    * most.
    */
   public static Pose getPoint(double[] coefficientsX, double[] coefficientsY, double t) {
@@ -227,7 +227,7 @@ public abstract class Polynomial {
   /**
    * Returns the point on a function at {@code x}.
    *
-   * @param coefficients - the coefficients defining the function
+   * @param coefficients the coefficients defining the function
    */
   public static Pose getPoint(double[] coefficients, double x) {
     return getPoint(new double[]{0, 1}, coefficients, x);
@@ -236,7 +236,7 @@ public abstract class Polynomial {
   /**
    * Calculates f(x)
    *
-   * @param coefficients - coefficients defining f(x), from least to most significant
+   * @param coefficients coefficients defining f(x), from least to most significant
    */
   public static double calculateFunction(double[] coefficients, double x) {
     double y = 0;
@@ -249,7 +249,7 @@ public abstract class Polynomial {
   /**
    * Calculates f'(x)
    *
-   * @param coefficients - coefficients defining f'(x), from least to most significant
+   * @param coefficients coefficients defining f'(x), from least to most significant
    */
   public static double calculateDerivative(double[] coefficients, double x) {
     return calculateFunction(deconstructCoefficientsMatrix(derivativeCoefficients(

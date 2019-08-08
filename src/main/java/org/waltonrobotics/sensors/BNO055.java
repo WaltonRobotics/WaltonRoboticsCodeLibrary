@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
  * This is a library for the BNO055 orientation sensor
  * 
  * Designed specifically to work with the Adafruit BNO055 Breakout. Pick one up
- * today in the adafruit shop! ------> http://www.adafruit.com/products
+ * today in the adafruit shop! ------ http://www.adafruit.com/products
  * 
  * These sensors use I2C to communicate, 2 pins are required to interface.
  * 
@@ -359,8 +359,6 @@ public class BNO055 {
 		 * 
 		 * @param bno055
 		 *            I2C object connected to the BNO055 chip
-		 * @param length
-		 *            Number of elements in vector
 		 * @return Vector of values
 		 */
 		private int[] readVector(I2C bno055) throws BNO055Exception {
@@ -572,8 +570,6 @@ public class BNO055 {
 
 	/**
 	 * Initialize BNO055 to default mode
-	 * 
-	 * @return True if initialization succeeded
 	 */
 	public void initialize() throws BNO055Exception {
 		initialize(OperationMode.OPERATION_MODE_NDOF);
@@ -584,7 +580,6 @@ public class BNO055 {
 	 * 
 	 * @param mode
 	 *            Desired operating mode after initialization
-	 * @return True if initialization succeeded
 	 */
 	public void initialize(OperationMode mode) throws BNO055Exception {
 
