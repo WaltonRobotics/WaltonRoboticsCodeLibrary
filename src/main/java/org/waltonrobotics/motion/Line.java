@@ -1,5 +1,8 @@
 package org.waltonrobotics.motion;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import org.waltonrobotics.metadata.PathData;
 import org.waltonrobotics.metadata.Pose;
 
 /**
@@ -16,13 +19,33 @@ public class Line extends BezierCurve {
    * Be careful when using this. If your robot's angle is off, the MotionContoller will try to
    * correct for it, so you will not get a straight line.
    *
-   * @param vCruise - the cruise velocity of the robot
-   * @param aMax - the maximum acceleration of the robot
-   * @param startVelocity - the start velocity
-   * @param endVelocity - the end velocity
-   * @param isBackwards - whether or not to move the robot backwards
-   * @param startPose - the starting Pose. Angle doesn't matter
-   * @param endPose - the ending Pose. Angle doesn't matter
+   * @param vCruise the cruise velocity of the robot
+   * @param aMax the maximum acceleration of the robot
+   * @param startVelocity the start velocity
+   * @param endVelocity the end velocity
+   * @param isBackwards whether or not to move the robot backwards
+   * @param startPathData the starting PathData for the Line. This can provide a starting time.
+   * @param startPose the starting Pose. Angle doesn't matter
+   * @param endPose the ending Pose. Angle doesn't matter
+   */
+  public Line(double vCruise, double aMax, double startVelocity, double endVelocity,
+      boolean isBackwards, PathData startPathData,
+      Pose startPose, Pose endPose) {
+    super(vCruise, aMax, startVelocity, endVelocity, isBackwards, startPathData, new LinkedList<>(
+        Arrays.asList(startPose, endPose)));
+  }
+
+  /**
+   * Be careful when using this. If your robot's angle is off, the MotionContoller will try to
+   * correct for it, so you will not get a straight line.
+   *
+   * @param vCruise the cruise velocity of the robot
+   * @param aMax the maximum acceleration of the robot
+   * @param startVelocity the start velocity
+   * @param endVelocity the end velocity
+   * @param isBackwards whether or not to move the robot backwards
+   * @param startPose the starting Pose. Angle doesn't matter
+   * @param endPose the ending Pose. Angle doesn't matter
    */
   public Line(double vCruise, double aMax, double startVelocity, double endVelocity,
       boolean isBackwards,
@@ -34,13 +57,13 @@ public class Line extends BezierCurve {
    * Be careful when using this. If your robot's angle is off, the MotionContoller will try to
    * correct for it, so you will not get a straight line.
    *
-   * @param vCruise - the cruise velocity of the robot
-   * @param aMax - the maximum acceleration of the robot
-   * @param startVelocity - the start velocity
-   * @param endVelocity - the end velocity
-   * @param isBackwards - whether or not to move the robot backwards
-   * @param startPose - the starting Pose. Angle doesn't matter
-   * @param distance - how you wish to offset the startingPose from.
+   * @param vCruise the cruise velocity of the robot
+   * @param aMax the maximum acceleration of the robot
+   * @param startVelocity the start velocity
+   * @param endVelocity the end velocity
+   * @param isBackwards whether or not to move the robot backwards
+   * @param startPose the starting Pose. Angle doesn't matter
+   * @param distance how you wish to offset the startingPose from.
    */
   public Line(double vCruise, double aMax, double startVelocity, double endVelocity,
       boolean isBackwards,

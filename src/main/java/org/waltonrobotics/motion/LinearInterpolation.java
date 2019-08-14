@@ -40,16 +40,17 @@ public class LinearInterpolation extends Path {
   private void createPath() {
     Line segment = new Line(vCruise, aMax, startVelocity, vCruise, isBackwards, knots.get(0),
         knots.get(1));
+    getPathData().addAll(segment.getPathData());
     for (int i = 1; i < knots.size() - 2; i++) {
-      getPathData().addAll(segment.getPathData());
       segment = new Line(vCruise, aMax,
           segment.getPathData().getFirst().getLeftState().getVelocity(),
-          vCruise, isBackwards, knots.get(i),
+          vCruise, isBackwards, segment.getPathData().getLast(), knots.get(i),
           knots.get(i + 1));
+      getPathData().addAll(segment.getPathData());
     }
     segment = new Line(vCruise, aMax, getPathData().getLast().getLeftState().getVelocity(),
-        endVelocity, isBackwards, knots.get(knots.size() - 2), knots.get(knots.size() - 1));
+        endVelocity, isBackwards, segment.getPathData().getLast(), knots.get(knots.size() - 2),
+        knots.get(knots.size() - 1));
     getPathData().addAll(segment.getPathData());
   }
-
 }
