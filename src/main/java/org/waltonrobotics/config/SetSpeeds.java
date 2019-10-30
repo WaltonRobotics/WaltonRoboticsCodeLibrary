@@ -1,6 +1,5 @@
 package org.waltonrobotics.config;
 
-import org.waltonrobotics.metadata.Pose;
 import org.waltonrobotics.metadata.RobotPair;
 
 public interface SetSpeeds {

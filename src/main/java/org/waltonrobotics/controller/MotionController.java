@@ -30,13 +30,14 @@ import org.waltonrobotics.motion.Path;
  */
 public class MotionController {
 
+  protected final SetSpeeds setSpeeds;
   private final Queue<Path> paths = new LinkedBlockingDeque<>();
   private final int period;
   private final MotionLogger motionLogger;
   private final Timer controller;
   private final List<PathData> history = new LinkedList<>();
-  protected final SetSpeeds setSpeeds;
   private final Supplier<Boolean> usingCamera;
+  private final boolean reverseAngle;
   protected RobotConfig robotConfig;
   protected PathData targetPathData;
   protected ErrorVector errorVector;
@@ -56,10 +57,10 @@ public class MotionController {
   private double integratedAngleError;
   private int pathNumber;
   private CameraReader cameraReader = new CameraReader();
-  private final boolean reverseAngle;
 
   /**
-   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
+   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods
+   * from
    * @param robotWidth - the robot width from the outside of the wheels
    * @param motionLogger - the MotionLogger from the org.waltonrobotics.AbstractDrivetrain
    */
@@ -87,7 +88,8 @@ public class MotionController {
   }
 
   /**
-   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
+   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods
+   * from
    * @param motionLogger - the MotionLogger from the org.waltonrobotics.AbstractDrivetrain
    */
   public MotionController(RobotConfig robotConfig, MotionLogger motionLogger, SetSpeeds setSpeeds,
@@ -96,7 +98,8 @@ public class MotionController {
   }
 
   /**
-   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
+   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods
+   * from
    * @param motionLogger - the MotionLogger from the org.waltonrobotics.AbstractDrivetrain
    */
   public MotionController(RobotConfig robotConfig, MotionLogger motionLogger, SetSpeeds setSpeeds) {
@@ -104,7 +107,8 @@ public class MotionController {
   }
 
   /**
-   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
+   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods
+   * from
    */
   public MotionController(RobotConfig robotConfig, SetSpeeds setSpeeds,
       Supplier<Boolean> usingCamera) {
@@ -113,21 +117,24 @@ public class MotionController {
 
 
   /**
-   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
+   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods
+   * from
    */
   public MotionController(RobotConfig robotConfig, SetSpeeds setSpeeds) {
     this(robotConfig, robotConfig.getRobotWidth(), new MotionLogger(), setSpeeds, () -> false);
   }
 
   /**
-   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
+   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods
+   * from
    */
   public MotionController(RobotConfig robotConfig) {
     this(robotConfig, () -> false);
   }
 
   /**
-   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
+   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods
+   * from
    */
   public MotionController(RobotConfig robotConfig, Supplier<Boolean> usingCamera) {
     this(robotConfig, robotConfig.getRobotWidth(), new MotionLogger(), new SetSpeeds() {
@@ -146,60 +153,6 @@ public class MotionController {
         return 0;
       }
     }, usingCamera);
-  }
-
-  /**
-   * Updates where the robot thinks it is, based off of the encoders and any sensor input
-   */
-  public Pose updateActualPosition(RobotPair wheelPositions,
-      RobotPair previousWheelPositions,
-      Pose estimatedActualPosition, @Nullable Double sensorHeading, @Nullable Pose sensorPose) {
-    double arcLeft = wheelPositions.getLeft() - previousWheelPositions.getLeft();
-    double arcRight = wheelPositions.getRight() - previousWheelPositions.getRight();
-    double dAngle = (arcRight - arcLeft) / Path.getRobotWidth() * (reverseAngle ? -1 : 1);
-    double arcCenter = (arcRight + arcLeft) / 2.0;
-    double dX;
-    double dY;
-
-    double currentAngle;
-    if(sensorHeading == null) {
-      currentAngle = estimatedActualPosition.getAngle();
-    } else {
-      currentAngle = sensorHeading;
-    }
-
-    if (Math.abs(dAngle) < 0.01) {
-      dX = arcCenter * StrictMath.cos(currentAngle);
-      dY = arcCenter * StrictMath.sin(currentAngle);
-    } else {
-      double xPrime = (arcCenter / dAngle) * StrictMath.sin(dAngle);
-      double yPrime = (arcCenter / dAngle) * (1.0 - StrictMath.cos(dAngle));
-
-      dX = (xPrime * StrictMath.cos(currentAngle))
-          - (yPrime * StrictMath.sin(currentAngle));
-
-      dY = ((xPrime * StrictMath.sin(currentAngle)))
-          + ((yPrime * StrictMath.cos(currentAngle)));
-    }
-
-    estimatedActualPosition = estimatedActualPosition.offset(dX, dY, dAngle);
-    if(sensorHeading != null) {
-      estimatedActualPosition = new Pose(estimatedActualPosition.getX(),
-          estimatedActualPosition.getY(), sensorHeading);
-    }
-    if(sensorPose != null) {
-      estimatedActualPosition = new Pose(sensorPose.getX(), sensorPose.getY(),
-          estimatedActualPosition.getAngle());
-    }
-
-    return estimatedActualPosition;
-  }
-
-  public Pose updateActualPosition(RobotPair wheelPositions,
-      RobotPair previousWheelPositions,
-      Pose estimatedActualPosition) {
-    return updateActualPosition(wheelPositions, previousWheelPositions, estimatedActualPosition,
-        null, null);
   }
 
   /**
@@ -228,6 +181,60 @@ public class MotionController {
       angleError += 2.0 * Math.PI;
     }
     return new ErrorVector(lagError, crossTrackError, angleError);
+  }
+
+  /**
+   * Updates where the robot thinks it is, based off of the encoders and any sensor input
+   */
+  public Pose updateActualPosition(RobotPair wheelPositions,
+      RobotPair previousWheelPositions,
+      Pose estimatedActualPosition, @Nullable Double sensorHeading, @Nullable Pose sensorPose) {
+    double arcLeft = wheelPositions.getLeft() - previousWheelPositions.getLeft();
+    double arcRight = wheelPositions.getRight() - previousWheelPositions.getRight();
+    double dAngle = (arcRight - arcLeft) / Path.getRobotWidth() * (reverseAngle ? -1 : 1);
+    double arcCenter = (arcRight + arcLeft) / 2.0;
+    double dX;
+    double dY;
+
+    double currentAngle;
+    if (sensorHeading == null) {
+      currentAngle = estimatedActualPosition.getAngle();
+    } else {
+      currentAngle = sensorHeading;
+    }
+
+    if (Math.abs(dAngle) < 0.01) {
+      dX = arcCenter * StrictMath.cos(currentAngle);
+      dY = arcCenter * StrictMath.sin(currentAngle);
+    } else {
+      double xPrime = (arcCenter / dAngle) * StrictMath.sin(dAngle);
+      double yPrime = (arcCenter / dAngle) * (1.0 - StrictMath.cos(dAngle));
+
+      dX = (xPrime * StrictMath.cos(currentAngle))
+          - (yPrime * StrictMath.sin(currentAngle));
+
+      dY = ((xPrime * StrictMath.sin(currentAngle)))
+          + ((yPrime * StrictMath.cos(currentAngle)));
+    }
+
+    estimatedActualPosition = estimatedActualPosition.offset(dX, dY, dAngle);
+    if (sensorHeading != null) {
+      estimatedActualPosition = new Pose(estimatedActualPosition.getX(),
+          estimatedActualPosition.getY(), sensorHeading);
+    }
+    if (sensorPose != null) {
+      estimatedActualPosition = new Pose(sensorPose.getX(), sensorPose.getY(),
+          estimatedActualPosition.getAngle());
+    }
+
+    return estimatedActualPosition;
+  }
+
+  public Pose updateActualPosition(RobotPair wheelPositions,
+      RobotPair previousWheelPositions,
+      Pose estimatedActualPosition) {
+    return updateActualPosition(wheelPositions, previousWheelPositions, estimatedActualPosition,
+        null, null);
   }
 
   public CameraReader getCameraReader() {

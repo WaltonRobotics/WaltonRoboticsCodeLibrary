@@ -47,11 +47,12 @@ public abstract class AbstractDrivetrain extends Subsystem {
   }
 
   /**
-   * Create the static drivetrain after creating the org.waltonrobotics.motion logger so you can use the
-   * MotionController
+   * Create the static drivetrain after creating the org.waltonrobotics.motion logger so you can use
+   * the MotionController
    */
   public AbstractDrivetrain(RobotConfig robotConfig, Supplier<Boolean> usingCamera,
-      ControllerType controllerType, boolean useMotorProfiles, boolean useDrivetrainSuppliedHeading) {
+      ControllerType controllerType, boolean useMotorProfiles,
+      boolean useDrivetrainSuppliedHeading) {
     this.robotConfig = robotConfig;
     this.controllerType = controllerType;
     if ((robotConfig.getKK() == 0) && (robotConfig.getKV() == 0) && (robotConfig.getKL() == 0)) {

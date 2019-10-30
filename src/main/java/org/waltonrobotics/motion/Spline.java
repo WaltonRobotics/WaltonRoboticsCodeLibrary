@@ -105,7 +105,9 @@ public class Spline extends Path {
 
   /**
    * Creates the control points required to make cubic bezier curves that transition between knots.
-   * Will make them for the shortest path possible.
+   * Will make them for the shortest path possible. <br> <a href=https://www.particleincell.com/2012/bezier-splines>Interactive
+   * javascript spline</a> <br> <a href=https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm>Thomas
+   * algorithm</a>
    *
    * @return A list of lists that hold the control points for the segments in the spline
    */
@@ -288,50 +290,6 @@ public class Spline extends Path {
 
 
   }
-
-//  public Pose getPoint(double percentage) {
-////    TODO make this work and get the correct point from the inner bezier curves given the percent t
-//
-////    System.out.println(percentage);
-////    int numberOfCurves = getDefiningBezierCurves().size();
-////
-////    int currentlyOn = (int) (percentage * (numberOfCurves - 1));
-//////    System.out.println(currentlyOn);
-////
-//////    double percentageInCurve = 1- (percentage * numberOfCurves);
-////    double percentageInCurve = percentage * (numberOfCurves - currentlyOn);
-//////    System.out.println(percentageInCurve);
-////
-////    double percent = 1.0 / numberOfCurves;
-//////    System.out.println(percent);
-////
-////    double percentagePerBezierCurve = percentageInCurve / percent;
-//////    System.out.println(percentagePerBezierCurve);
-////
-////    return getDefiningBezierCurves().get(currentlyOn).getPoint(percentagePerBezierCurve);
-//
-//    if (percentage != 1.0) {
-//      int value = (int) (percentage * getDefiningBezierCurves().size());
-//      BezierCurve bezierCurve = getDefiningBezierCurves()
-//          .get(value);
-//
-//      return bezierCurve
-//          .getPoint(((percentage * getDefiningBezierCurves().size()) - value));
-//    }
-//    return definingBezierCurves.get(definingBezierCurves.size() - 1).getPoint(1.0);
-//  }
-
-//  public Pose getDerivative(double percentage) {
-//    if (percentage != 1.0) {
-//      int value = (int) (percentage * getDefiningBezierCurves().size());
-//      BezierCurve bezierCurve = getDefiningBezierCurves()
-//          .get(value);
-//
-//      return bezierCurve
-//          .getDerivative(((percentage * getDefiningBezierCurves().size()) - value));
-//    }
-//    return definingBezierCurves.get(definingBezierCurves.size() - 1).getDerivative(1.0);
-//  }
 
   /**
    * Returns the point on the path that is closest to initPose.

@@ -5,6 +5,12 @@ import org.waltonrobotics.metadata.PathData;
 import org.waltonrobotics.metadata.Pose;
 import org.waltonrobotics.metadata.State;
 
+/**
+ * This Path turns the robot in place.
+ *
+ * @author Russell Newton, Walton Robotics
+ * @author Tim Stanistreet, Walton Robotics
+ */
 public class PointTurn extends Path {
 
   private final Pose startPose;

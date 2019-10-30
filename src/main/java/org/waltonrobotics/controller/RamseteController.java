@@ -22,11 +22,11 @@ public class RamseteController extends MotionController {
   private final boolean useDrivetrainSuppliedHeading;
 
   /**
-   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
+   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods
+   * from
    * @param setSpeeds something implementing the SetSpeeds interface
    * @param useMotorProfiles whether or not you're paying much attention to motor profiles. Defaults
    * to false.
-   * @param useDrivetrainSuppliedHeading
    * @param usingCamera whether or not you're using a camera. Defaults to false
    */
   public RamseteController(RobotConfig robotConfig, SetSpeeds setSpeeds, boolean useMotorProfiles,
@@ -37,7 +37,8 @@ public class RamseteController extends MotionController {
   }
 
   /**
-   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods from
+   * @param robotConfig - the robotConfig to use the org.waltonrobotics.AbstractDrivetrain methods
+   * from
    * @param setSpeeds something implementing the SetSpeeds interface
    * @param usingCamera whether or not you're using a camera. Defaults to false
    */
@@ -100,13 +101,17 @@ public class RamseteController extends MotionController {
               omegaCommand * robotConfig.robotAngularDrag() / robotConfig
                   .effectiveWheelbaseRadius());
 
-      leftVoltage = robotConfig.leftMotorConfig().getMotorParameters().getVoltageFromTorque(leftCommand,
-          leftTorque);
-      rightVoltage = robotConfig.rightMotorConfig().getMotorParameters().getVoltageFromTorque(rightCommand,
-          rightTorque);
+      leftVoltage = robotConfig.leftMotorConfig().getMotorParameters()
+          .getVoltageFromTorque(leftCommand,
+              leftTorque);
+      rightVoltage = robotConfig.rightMotorConfig().getMotorParameters()
+          .getVoltageFromTorque(rightCommand,
+              rightTorque);
     } else {
-      leftVoltage = robotConfig.leftMotorConfig().getMotorParameters().getVoltageFromSpeed(leftCommand);
-      rightVoltage = robotConfig.rightMotorConfig().getMotorParameters().getVoltageFromSpeed(rightCommand);
+      leftVoltage = robotConfig.leftMotorConfig().getMotorParameters()
+          .getVoltageFromSpeed(leftCommand);
+      rightVoltage = robotConfig.rightMotorConfig().getMotorParameters()
+          .getVoltageFromSpeed(rightCommand);
     }
     return new RobotPair(leftVoltage, rightVoltage, time);
   }
@@ -120,7 +125,7 @@ public class RamseteController extends MotionController {
   @Override
   public Pose updateActualPosition(RobotPair wheelPositions, RobotPair previousWheelPositions,
       Pose estimatedActualPosition) {
-    if(!useDrivetrainSuppliedHeading) {
+    if (!useDrivetrainSuppliedHeading) {
       return super
           .updateActualPosition(wheelPositions, previousWheelPositions, estimatedActualPosition);
     } else {

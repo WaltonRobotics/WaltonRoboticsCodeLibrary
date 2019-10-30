@@ -20,7 +20,8 @@ public class MotionData {
    * @param error the errors at the specific time
    * @param powers the posers supplied to the motors
    * @param pathNumber the path number the robot is currently going through
-   * @param currentMotionState the state the robot is at going through the org.waltonrobotics.motion
+   * @param currentMotionState the state the robot is at going through the
+   * org.waltonrobotics.motion
    */
   public MotionData(Pose actual, Pose target, ErrorVector error, RobotPair powers,
       int pathNumber,

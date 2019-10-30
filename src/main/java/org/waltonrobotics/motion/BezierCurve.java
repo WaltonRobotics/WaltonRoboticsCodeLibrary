@@ -2,11 +2,8 @@ package org.waltonrobotics.motion;
 
 import static org.waltonrobotics.util.Helper.calculateCoefficients;
 import static org.waltonrobotics.util.Helper.resizeArrayLeft;
-import static org.waltonrobotics.util.Polynomial.calculateDFDT;
 import static org.waltonrobotics.util.Polynomial.deconstructCoefficientsMatrix;
 import static org.waltonrobotics.util.Polynomial.expandBinomial;
-import static org.waltonrobotics.util.Polynomial.getPoint;
-import static org.waltonrobotics.util.Polynomial.minimizeDistance;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,6 +28,7 @@ import org.waltonrobotics.util.Polynomial;
  *
  * @author Marius Juston, Walton Robotics
  * @author Russell Newton, Walton Robotics
+ * @author Tim Stanistreet, Walton Robotics
  */
 public class BezierCurve extends Path {
 
@@ -105,11 +103,6 @@ public class BezierCurve extends Path {
     this(vCruise, aMax, startVelocity, endVelocity, isBackwards, Arrays.asList(controlPoints));
   }
 
-//  public static void main(String[] args) {
-//    BezierCurve curve = new BezierCurve(1, 1, 0, 0, false,
-//        new Pose(0, 0), new Pose(1, -1), new Pose(2, -1), new Pose(3, 0));
-//    System.out.println(curve.getClosestPose(new Pose(3, 0)).toString());
-//  }
 
   private void defineCoefficients() {
     DMatrixRMaj coefficientsX = new DMatrixRMaj(keyPoints.size(), 1);
@@ -128,8 +121,6 @@ public class BezierCurve extends Path {
             expandedBinomial.get(j) * keyPoints.get(keyPoints.size() - i - 1).getY()
                 * binomialCoefficients[i]);
       }
-//      System.out.println(coefficientsIX.toString());
-//      System.out.println(coefficientsIY.toString());
       CommonOps_DDRM.add(coefficientsX, coefficientsIX, coefficientsX);
       CommonOps_DDRM.add(coefficientsY, coefficientsIY, coefficientsY);
     }

@@ -24,8 +24,8 @@ public abstract class RobotConfig {
    * This returns the max velocity the robot can achieve.
    * <br>
    * This value can also be found using the <a href=https://github.com/NamelessSuperCoder/Motion-Profiller-Log-Display>Motion
-   * Log Viewer</a> using a org.waltonrobotics.motion that is long and straight and has a high max velocity. or it can
-   * be calculated by using the (1 - kK)/ kV equation
+   * Log Viewer</a> using a org.waltonrobotics.motion that is long and straight and has a high max
+   * velocity. or it can be calculated by using the (1 - kK)/ kV equation
    *
    * @return the max velocity the robot can achieve.
    */
