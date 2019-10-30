@@ -1,5 +1,7 @@
 package org.waltonrobotics.util;
 
+import static java.lang.StrictMath.cos;
+import static java.lang.StrictMath.sin;
 import static org.waltonrobotics.util.Helper.calculateCoefficients;
 
 import java.util.Arrays;
@@ -13,13 +15,30 @@ import org.ejml.interfaces.decomposition.EigenDecomposition_F64;
 import org.waltonrobotics.metadata.Pose;
 
 /**
+ * Contains functions to manage 2D Polynomials.
+ *
  * @author Russell Newton, Walton Robotics
  **/
-public abstract class Polynomial {
+public class Polynomial {
 
-//  public static void main(String[] args) {
-//    System.out.println(multiply(new double[]{1, 3, 3, 1}, new double[]{1, 3, 3, 1}));
-//  }
+  private final double[] coefficientsX;
+  private final double[] coefficientsY;
+
+  /**
+   * Create a new parametric {@code Polynomial} with the passed coefficients. Coefficients should be
+   * passed in from least to most significant.
+   */
+  public Polynomial(double[] coefficientsX, double[] coefficientsY) {
+    this.coefficientsX = coefficientsX;
+    this.coefficientsY = coefficientsY;
+  }
+
+  /**
+   * Create a new {@code Polynomial} as a function of x.
+   */
+  public Polynomial(double[] coefficients) {
+    this(new double[]{0.0, 1.0}, coefficients);
+  }
 
   /**
    * Multiplies two polynomials, returning the resulting coefficients.
@@ -139,16 +158,26 @@ public abstract class Polynomial {
    * Deconstructs a single row {@code DMatrixRMaj} into a double[]
    */
   public static double[] deconstructCoefficientsMatrix(DMatrixRMaj coefficients) {
-    double[] newCoefficients = new double[coefficients.numRows];
-    for (int i = 0; i < coefficients.numRows; i++) {
+    double[] newCoefficients = new double[coefficients.numCols];
+    for (int i = 0; i < coefficients.numCols; i++) {
       newCoefficients[i] = coefficients.get(i);
     }
     return newCoefficients;
   }
 
+  public static double[][] deconstructMatrix(DMatrixRMaj matrix) {
+    double[][] newMatrix = new double[matrix.getNumRows()][matrix.getNumCols()];
+    for (int i = 0; i < matrix.getNumRows(); i++) {
+      for (int j = 0; j < matrix.getNumCols(); j++) {
+        newMatrix[i][j] = matrix.get(i, j);
+      }
+    }
+    return newMatrix;
+  }
+
   /**
-   * Finds t corresponding to the point closest to {@code inputPoint} on the parametric polynomial
-   * curve defined by {@code coefficientsX} and {@code coefficientsY}.
+   * Finds t corresponding to the point closest to {@code inputPoint} on the parametric {@code
+   * Polynomial} curve defined by {@code coefficientsX} and {@code coefficientsY}.
    *
    * @param lowBound low bound for t
    * @param highBound high bound for t
@@ -195,8 +224,8 @@ public abstract class Polynomial {
   }
 
   /**
-   * Finds x corresponding to the point closest to {@code inputPoint} on the parametric polynomial
-   * curve defined by {@code coefficients}.
+   * Finds x corresponding to the point closest to {@code inputPoint} on the parametric {@code
+   * Polynomial} curve defined by {@code coefficients}.
    *
    * @param lowBound low bound for x
    * @param highBound high bound for x
@@ -218,27 +247,27 @@ public abstract class Polynomial {
   public static Pose getPoint(double[] coefficientsX, double[] coefficientsY, double t) {
     double x = calculateFunction(coefficientsX, t);
     double y = calculateFunction(coefficientsY, t);
-    double dX = calculateDerivative(coefficientsX, t);
-    double dY = calculateDerivative(coefficientsY, t);
+    double dX = calculateDFDT(coefficientsX, t);
+    double dY = calculateDFDT(coefficientsY, t);
 
     return new Pose(x, y, Math.atan2(dY, dX));
   }
 
   /**
-   * Returns the point on a function at {@code x}.
+   * Returns the point on a function at {@code t}.
    *
    * @param coefficients the coefficients defining the function
    */
-  public static Pose getPoint(double[] coefficients, double x) {
-    return getPoint(new double[]{0, 1}, coefficients, x);
+  public static Pose getPoint(double[] coefficients, double t) {
+    return getPoint(new double[]{0, 1}, coefficients, t);
   }
 
   /**
-   * Calculates f(x)
+   * Calculates f(x).
    *
    * @param coefficients coefficients defining f(x), from least to most significant
    */
-  public static double calculateFunction(double[] coefficients, double x) {
+  private static double calculateFunction(double[] coefficients, double x) {
     double y = 0;
     for (int i = 0; i < coefficients.length; i++) {
       y += coefficients[i] * Math.pow(x, i);
@@ -247,13 +276,22 @@ public abstract class Polynomial {
   }
 
   /**
-   * Calculates f'(x)
-   *
-   * @param coefficients coefficients defining f'(x), from least to most significant
+   * Calculates dy/dx(t). Coefficients are ordered from least to most significant.
    */
-  public static double calculateDerivative(double[] coefficients, double x) {
+  public static double calculateDYDX(double[] coefficientsX, double[] coefficientsY, double t) {
+    double dx = calculateDFDT(coefficientsX, t);
+    double dy = calculateDFDT(coefficientsY, t);
+    return dy / dx;
+  }
+
+  /**
+   * Calculates f'(t).
+   *
+   * @param coefficients coefficients defining f'(t), from least to most significant
+   */
+  public static double calculateDFDT(double[] coefficients, double t) {
     return calculateFunction(deconstructCoefficientsMatrix(derivativeCoefficients(
-        new DMatrixRMaj(coefficients))), x);
+        new DMatrixRMaj(coefficients))), t);
   }
 
   /**
@@ -272,6 +310,92 @@ public abstract class Polynomial {
       expandedCoefficients[i] = binomialCoefficients[i] * aPowers[i] * bPowers[i];
     }
     return expandedCoefficients;
+  }
+
+  /**
+   * Reflect a {@code Polynomial}, defined by {@code coefficientsX} and {@code coefficientsY}
+   * (sorted by increasing significance), over a line through {@code through}, with a slope defined
+   * by {@code through.getAngle()}.
+   */
+  public static Polynomial reflect(double[] coefficientsX, double[] coefficientsY, Pose through) {
+    DMatrixRMaj function = new DMatrixRMaj(new double[][]{coefficientsX, coefficientsY});
+    double yIntercept = -through.getX() * Math.tan(through.getAngle()) + through.getY();
+    DMatrixRMaj shiftDown = new DMatrixRMaj(new double[][]{
+        {1, 0, 0},
+        {0, 1, -yIntercept},
+        {0, 0, 1}
+    });
+    DMatrixRMaj reflect = new DMatrixRMaj(new double[][]{
+        {cos(2 * through.getAngle()), sin(2 * through.getAngle()), 0},
+        {sin(2 * through.getAngle()), -cos(2 * through.getAngle()), 0},
+        {1, 0, 0}
+    });
+    DMatrixRMaj shiftUp = new DMatrixRMaj(new double[][]{
+        {1, 0, 0},
+        {0, 1, -yIntercept},
+        {0, 0, 1}
+    });
+    DMatrixRMaj reflectedFunction = shiftUp.copy();
+    CommonOps_DDRM.mult(reflectedFunction, reflect, reflectedFunction);
+    CommonOps_DDRM.mult(reflectedFunction, shiftDown, reflectedFunction);
+    CommonOps_DDRM.mult(reflectedFunction, function, reflectedFunction);
+    double[][] reflectedCoefficients = deconstructMatrix(reflectedFunction);
+    return new Polynomial(reflectedCoefficients[0], reflectedCoefficients[1]);
+  }
+
+  /**
+   * Reflect this {@code Polynomial} over a line through {@code through}, with a slope defined by
+   * {@code through.getAngle()}.
+   */
+  public Polynomial reflect(Pose through) {
+    return reflect(coefficientsX, coefficientsY, through);
+  }
+
+  /**
+   * Finds t corresponding to the point closest to {@code inputPoint} on this {@code Polynomial}.
+   *
+   * @return the {@code Pose} at the calculated t.
+   */
+  public Pose minimizeDistance(Pose inputPose, double lowBound, double highBound) {
+    return minimizeDistance(inputPose, lowBound, highBound, coefficientsX, coefficientsY);
+  }
+
+  /**
+   * @return f(t).
+   */
+  public Pose getPoint(double t) {
+    return getPoint(coefficientsX, coefficientsY, t);
+  }
+
+  /**
+   * Calculates dy/dt(t) of this {@code Polynomial}.
+   */
+  public double calculateDYDT(double t) {
+    return calculateDFDT(coefficientsY, t);
+  }
+
+  /**
+   * @return dx/dt(t).
+   */
+  public double calculateDXDT(double t) {
+    return calculateDFDT(coefficientsX, t);
+  }
+
+  /**
+   * @return dy/dx(t).
+   */
+  public double calculateDYDX(double t) {
+    return calculateDYDX(coefficientsX, coefficientsY, t);
+  }
+
+  /**
+   * @return this * {@code factor}.
+   */
+  public Polynomial multiply(Polynomial factor) {
+    DMatrixRMaj prodX = Polynomial.multiply(this.coefficientsX, factor.coefficientsX);
+    DMatrixRMaj prodY = Polynomial.multiply(this.coefficientsX, factor.coefficientsX);
+    return new Polynomial(deconstructCoefficientsMatrix(prodX),
+        deconstructCoefficientsMatrix(prodY));
   }
 
 }

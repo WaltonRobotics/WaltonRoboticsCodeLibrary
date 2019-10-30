@@ -2,7 +2,7 @@ package org.waltonrobotics.motion;
 
 import static org.waltonrobotics.util.Helper.calculateCoefficients;
 import static org.waltonrobotics.util.Helper.resizeArrayLeft;
-import static org.waltonrobotics.util.Polynomial.calculateDerivative;
+import static org.waltonrobotics.util.Polynomial.calculateDFDT;
 import static org.waltonrobotics.util.Polynomial.deconstructCoefficientsMatrix;
 import static org.waltonrobotics.util.Polynomial.expandBinomial;
 import static org.waltonrobotics.util.Polynomial.getPoint;
@@ -18,6 +18,7 @@ import org.waltonrobotics.metadata.PathData;
 import org.waltonrobotics.metadata.Pose;
 import org.waltonrobotics.metadata.State;
 import org.waltonrobotics.util.GaussLegendre;
+import org.waltonrobotics.util.Polynomial;
 
 /**
  * <p>This Path is a simple curve. The shape of the curve is controlled by the control points.
@@ -42,7 +43,7 @@ public class BezierCurve extends Path {
   private final double startLCenter;
   public double curveLength;
   private List<Pose> pathPoints;
-  private List<double[]> coefficients;
+  private Polynomial pathPolynomial;
 
   /**
    * This constructor is used with the splines, but feel free to use it when creating your own
@@ -111,7 +112,6 @@ public class BezierCurve extends Path {
 //  }
 
   private void defineCoefficients() {
-    coefficients = new LinkedList<>();
     DMatrixRMaj coefficientsX = new DMatrixRMaj(keyPoints.size(), 1);
     DMatrixRMaj coefficientsY = new DMatrixRMaj(keyPoints.size(), 1);
     int[] binomialCoefficients = calculateCoefficients(keyPoints.size() - 1);
@@ -133,8 +133,8 @@ public class BezierCurve extends Path {
       CommonOps_DDRM.add(coefficientsX, coefficientsIX, coefficientsX);
       CommonOps_DDRM.add(coefficientsY, coefficientsIY, coefficientsY);
     }
-    coefficients.add(deconstructCoefficientsMatrix(coefficientsX));
-    coefficients.add(deconstructCoefficientsMatrix(coefficientsY));
+    pathPolynomial = new Polynomial(deconstructCoefficientsMatrix(coefficientsX),
+        deconstructCoefficientsMatrix(coefficientsY));
   }
 
   public List<Pose> createPoints() {
@@ -142,8 +142,7 @@ public class BezierCurve extends Path {
 
     for (double i = 0; i <= getPathNumberOfSteps(); i++) {
 
-      pathPoints.add(getPoint(coefficients.get(0), coefficients.get(1),
-          i / getPathNumberOfSteps()));
+      pathPoints.add(pathPolynomial.getPoint(i / getPathNumberOfSteps()));
     }
 
     return pathPoints;
@@ -310,8 +309,8 @@ public class BezierCurve extends Path {
 
     for (int i = 0; i < t.length; i++) {
 
-      double dx = calculateDerivative(coefficients.get(0), t[i]);
-      double dy = calculateDerivative(coefficients.get(1), t[i]);
+      double dx = pathPolynomial.calculateDXDT(t[i]);
+      double dy = pathPolynomial.calculateDYDT(t[i]);
       sum += C[i] * StrictMath.hypot(dx, dy);
     }
 
@@ -367,8 +366,7 @@ public class BezierCurve extends Path {
    * works only for cubic curves.
    */
   public Pose getClosestPose(Pose inputPose) {
-    return minimizeDistance(inputPose, 0, 1, coefficients.get(0),
-        coefficients.get(1));
+    return pathPolynomial.minimizeDistance(inputPose, 0, 1);
   }
 
   public double getStartVelocity() {
