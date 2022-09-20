@@ -1,20 +1,12 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2019.4.1"
+    id "edu.wpi.first.GradleRIO" version "2022.3.1"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 def userHome = System.getProperty('user.home')
-def otherProjects = [
-        "${userHome}/Documents/GitHub/PowerUp/PowerUp/lib/",
-        "${userHome}/wpilib/user/java/lib/",
-        "${userHome}/Documents/GitHub/Path Planning/motionLibrary/",
-        "${userHome}/Documents/DeepSpace/DeepSpaceRobot/lib/",
-        "${userHome}/Documents/TestBed/lib/",
-        "${userHome}/Documents/WaltonRobotics-Training-Game/lib/",
-]
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
@@ -48,7 +40,7 @@ deploy {
 }
 
 // Set this to true to enable desktop support.
-def includeDesktopSupport = false
+def includeDesktopSupport = true
 
 // Maven central needed for JUnit
 repositories {
@@ -63,7 +55,6 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
     testCompile 'junit:junit:4.12'
-    compile group: 'org.ejml', name: 'ejml-all', version: '0.37.1'
 }
 
 test {
@@ -82,18 +73,3 @@ jar {
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
     from sourceSets.main.allSource
 }
-
-task copyJarToOtherProjects {
-    doLast {
-        println("Copied to other projects")
-        for (projectDirectory in otherProjects) {
-            copy {
-                from 'build/libs/' + project.name + '.jar'
-                into projectDirectory
-                println(projectDirectory)
-            }
-        }
-    }
-}
-
-build.finalizedBy(copyJarToOtherProjects)
